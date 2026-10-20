@@ -99,10 +99,10 @@ const CHECKIN_BUTTONS = [
 ];
 
 export const RANKS = [
-  { id: 'sagird', name: 'Şagird', from: 1 },
-  { id: 'igid', name: 'İgid', from: 3 },
-  { id: 'pehlevan', name: 'Pəhləvan', from: 6 },
-  { id: 'kepez', name: 'Kəpəz', from: 10 },
+  { id: 'sveji', name: 'Sveji', you: 'Svejisən', from: 1 },
+  { id: 'kele', name: 'Kələ', you: 'Kələsən', from: 3 },
+  { id: 'kacok', name: 'Kaçok', you: 'Kaçoksan', from: 6 },
+  { id: 'ejdaha', name: 'Əjdaha', you: 'Əjdahasan', from: 10 },
 ];
 
 export const BADGES = [
@@ -464,7 +464,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     const lastLevel = await getKV('last_level', null);
     if (lastLevel == null) await setKV('last_level', g2.level);
     else if (g2.level > lastLevel) {
-      popups.push({ type: 'level', level: g2.level, rank: g2.rank.name });
+      popups.push({ type: 'level', level: g2.level, rank: g2.rank.name, you: g2.rank.you });
       await setKV('last_level', g2.level);
     }
     if (popups.length) {
@@ -472,7 +472,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
       await setKV('popups', [...pending, ...popups]);
       for (const p of popups) {
         if (p.type === 'badge') await sendOwner(`🏅 <b>Yeni nişan: ${p.name}</b>\n${p.desc}. Halaldı, qağa! +100 XP`);
-        else await sendOwner(`🔥 <b>Səviyyə ${p.level}!</b> İndi sən <b>${p.rank}</b>san, qağa. Belə get!`);
+        else await sendOwner(`🔥 <b>Səviyyə ${p.level}!</b> İndi sən <b>${p.you}</b>, qağa. Belə get!`);
       }
     }
     return { g: g2, s, all, todayDate, nowMs };

@@ -223,6 +223,6 @@ The **email login screen goes away**, because Telegram identifies you on its own
 
 - **Daily score 0–100:** protein 25 · calories 20 · water 20 · creatine 10 · training/recovery 15 · sweets 10. A day scoring 80+ is a **"special day"** and gets a gold cell in the 12-week tracker.
 - **XP:** 1 per score point · workout +50 · new best set +25 · weigh-in +20 · evening check-in +10 · badge +100. Level L needs 200 + 100 × L XP.
-- **Ranks:** **Şagird** (1–2) → **İgid** (3–5) → **Pəhləvan** (6–9) → **Kəpəz** (10+, named after the mountain above Ganja).
+- **Ranks:** **Sveji** (1–2) → **Kələ** (3–5) → **Kaçok** (6–9) → **Əjdaha** (10+).
 - **Streaks:** creatine, water, logging (2+ meals), training (weeks with 3+ sessions), with at-risk warnings.
 - **Badges:** the 12 from the prompt, with the bench goal at 105 kg and the squat goal at 100 kg.

@@ -87,7 +87,7 @@ app.go = async (screen, opts = {}) => {
 
 function showPopups(list) {
   for (const p of list) {
-    if (p.type === 'level') celebrate(`Səviyyə ${p.level}!`, `İndi sən ${p.rank}san, qağa. Belə get!`);
+    if (p.type === 'level') celebrate(`Səviyyə ${p.level}!`, `İndi sən ${p.you || p.rank}, qağa. Belə get!`);
     if (p.type === 'badge') celebrate(`Yeni nişan: ${p.name}`, `${p.desc}. +100 XP`);
   }
 }
