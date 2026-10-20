@@ -47,15 +47,15 @@ function pinScreen() {
   </div>`;
 }
 
-function fatalScreen(title, text) {
-  return `<div class="pin"><div class="pin-logo">${flame('xl')}</div><h1>${esc(title)}</h1><p class="muted center">${esc(text)}</p></div>`;
+function fatalScreen(title, text, code = '') {
+  return `<div class="pin"><div class="pin-logo">${flame('xl')}</div><h1>${esc(title)}</h1><p class="muted center">${esc(text)}</p>${code ? `<p class="muted tiny center">${esc(code)}</p>` : ''}</div>`;
 }
 
 /* ---------- render / refresh / go ---------- */
 app.render = () => {
   document.body.classList.toggle('locked', !S.unlocked || !!S.fatal);
   if (!S.unlocked) { view.innerHTML = pinScreen(); tabs.hidden = true; return; }
-  if (S.fatal) { view.innerHTML = fatalScreen(S.fatal[0], S.fatal[1]); tabs.hidden = true; return; }
+  if (S.fatal) { view.innerHTML = fatalScreen(S.fatal[0], S.fatal[1], S.fatal[2]); tabs.hidden = true; return; }
   if (!S.st) { view.innerHTML = `<div class="pin">${flame('xl lit')}<p class="muted">Tonqal yanır…</p></div>`; tabs.hidden = true; return; }
   view.innerHTML = `<div class="screen screen-${S.screen}">${SCREENS[S.screen].render()}</div>`;
   tabs.hidden = S.screen === 'workout';
@@ -100,9 +100,11 @@ async function boot() {
     await app.refresh(false);
     app.render();
   } catch (e) {
+    const code = `kod: ${e.status ?? '-'} · ${e.message} · tg ${tg ? tg.version + ' ' + tg.platform : 'yox'} · initData ${tg && tg.initData ? tg.initData.length : 0}`;
     if (e instanceof ApiError && e.status === 403) S.fatal = /start/.test(e.message) ? ['Əvvəlcə /start yaz', 'Botun çatına qayıt, /start göndər, sonra proqramı bağla və yenidən aç.'] : ['Bu bot şəxsidi', 'Bu proqram ancax sahibi üçündü. Sahibi başqa Telegram hesabıdı.'];
     else if (e instanceof ApiError && e.status === 401) S.fatal = ['Giriş vaxtı keçif', 'Proqramı bağla və botdan yenidən aç.'];
     else S.fatal = ['Bağlantı yoxdu', e.message || 'Bir az sonra yenə yoxla, qağa.'];
+    S.fatal[2] = code;
     app.render();
   }
 }
