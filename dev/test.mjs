@@ -50,8 +50,8 @@ assert.equal((await app.handle(new Request(BASE + '/a/state', { method: 'POST', 
 
 console.log('Today + food');
 let st = await api('state');
-assert.equal(st.ok, true); assert.equal(st.today, today); assert.equal(st.cycle.week, 1); assert.equal(st.next.id, 'A'); assert.ok(st.motivation.length > 5);
-ok('state: week 1, next session A, motivation of the day');
+assert.equal(st.ok, true); assert.equal(st.today, today); assert.equal(st.cycle.week, 1); assert.equal(st.next.id, 'FB'); assert.ok(st.motivation.length > 5);
+ok('state: week 1, default full-body session, motivation of the day');
 await api('sync', { sessions: [{ id: 'A', name: 'Bütün bədən A' }, { id: 'B', name: 'Bütün bədən B' }, { id: 'C', name: 'Bütün bədən C' }] });
 await api('meal_preset', { preset: 'breakfast', date: today });
 await api('meal_preset', { preset: 'lunch', date: today });
@@ -75,6 +75,7 @@ const f1 = await api('workout_finish', { id: w1.id, sets: sets1, notes: 'yaxşı
 assert.equal(f1.sets, 6); assert.equal(f1.minutes, 66); ok('finish workout → summary');
 st = await api('state');
 assert.equal(st.next.id, 'B'); assert.equal(st.next.ready, false); ok('queue moved to B, not ready for 20 h');
+assert.equal(Math.round((st.next.readyAt - (T0 + 1.1 * H)) / H), 40); ok('next workout ready 40 h after the last one (every second day)');
 let hist = (await api('history')).history;
 assert.equal(hist.bench.last.length, 3); assert.equal(hist.bench.last[0].weight, 72.5); ok('history for progression');
 await api('workout_skip');

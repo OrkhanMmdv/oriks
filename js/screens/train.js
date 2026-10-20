@@ -20,17 +20,17 @@ export function render() {
   </article>
 
   <article class="card next ${st.next.ready ? 'is-ready' : ''}">
-    <p class="label">Növbəti — növbə ilə</p>
+    <p class="label">Növbəti məşq</p>
     <h2>${esc(next.name)}</h2>
     <p class="ready ${st.next.ready ? 'ok' : ''}">${readyText(st.next, st.today)}</p>
     <div class="row gap">
       <button class="btn fire grow" data-a="start" data-v="${next.id}">${st.draft ? 'Davam elə' : 'Başdıyax'}</button>
-      ${st.draft ? '' : '<button class="btn ghost" data-a="skip">Ötür</button>'}
+      ${st.draft || SESSIONS.length < 2 ? '' : '<button class="btn ghost" data-a="skip">Ötür</button>'}
     </div>
-    <p class="muted tiny">Növbə: ${SESSIONS.map(x => x.id === next.id ? `<b>${x.id}</b>` : x.id).join(' → ')} → … Gün buraxsan, sadəcə gecikir.</p>
+    <p class="muted tiny">${SESSIONS.length === 1 ? 'Hər dəfə eyni proqram, 2 gündən bir. Gün buraxsan, sadəcə gecikir.' : `Növbə: ${SESSIONS.map(x => x.id === next.id ? `<b>${x.id}</b>` : x.id).join(' → ')} → … Gün buraxsan, sadəcə gecikir.`}</p>
   </article>
 
-  <h3 class="section">Bütün məşqlər</h3>
+  <h3 class="section">${SESSIONS.length === 1 ? 'Proqram' : 'Bütün məşqlər'}</h3>
   ${SESSIONS.map(s => `<article class="card">
     <div class="row between"><div><h3>${esc(s.name)}</h3><p class="muted small">${esc(s.focus)}</p></div>
     ${st.draft ? '' : `<button class="btn soft small" data-a="start" data-v="${s.id}">${icon.play} Başla</button>`}</div>
@@ -41,7 +41,7 @@ export function render() {
   <article class="card">
     <div class="meter"><span>Bu həftə</span><b>${cardio.length} / 2 dəfə · ${st.week.cardioMin} dəq</b></div>
     ${bar(cardio.length, 2, 'gold')}
-    <p class="muted tiny">Hədəf: həftədə 2 × 15–20 dəqiqə (B və C günlərindən sonra).</p>
+    <p class="muted tiny">Hədəf: həftədə 2 × 15–20 dəqiqə — məşqdən sonra və ya istirahət günü gəzinti.</p>
     <div class="row gap tight">
       <label class="field grow"><input id="cmin" type="number" inputmode="numeric" min="1" value="15" aria-label="Dəqiqə"><span>dəq</span></label>
       <select id="ckind" aria-label="Növ">${CARDIO_KINDS.map(k => `<option>${k}</option>`).join('')}</select>

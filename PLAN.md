@@ -45,81 +45,50 @@ The app only tracks **calories and protein**. Fat and carbs follow on their own 
 
 ---
 
-## 3. 12-week training program — full body, 3–4× a week
+## 3. 12-week training program: one full-body workout, every second day
 
 ### How the schedule works
-There are 3 full-body sessions, and they form a **queue**: **Full Body A → Full Body B → Full Body C → (repeat)**. The app always shows the **next** one. Missing a day just delays it. Leave at least ~20 hours between sessions. **3 a week is the target**, and a 4th on a day off work is a bonus (the queue simply continues).
+There is **one workout, the same every time**. You do it **every second day** (e.g. Mon → Wed → Fri → Sun → Tue …), which is about 3–4 times a week. The app shows the next one as **ready 40 hours** after you finish the last one: finish Monday evening, and it's ready on Wednesday. Missing a day just moves it later.
 
-Every session hits the whole body. The big lifts are spread out so each one gets a fresh start: bench leads A, dumbbell pressing leads B, squat leads C. Each session takes about 60–70 minutes.
+**Time: about 60 minutes.** Warm-up 8 min · lifting ~48 min (three supersets save time) · cool-down 4 min.
 
 ### Phases
-| Weeks | Phase | Sets | Effort (reps in reserve = RIR) | Notes |
-|---|---|---|---|---|
-| 1–2 | **Re-entry** | 3 per exercise (2 for supersets) | RIR 3 | Start weights are ~10% under your level. Learn the squat. |
-| 3–6 | **Build 1** | First lift 4, others as written | RIR 1–2 | Double progression. |
-| 7 | **Deload** | Half the sets | RIR 4 | Same weights, half the work. |
-| 8–11 | **Build 2** | First lift 4, others as written | RIR 1–2 (small exercises RIR 0–1 on the last set) | |
-| 12 | **Test + deload** | Half the sets; the first lift of each session is a top set of 3–5 at RIR 0–1 | | New estimated maxes → next 12 weeks. |
+| Weeks | Phase | Sets | Effort (reps in reserve = RIR) |
+|---|---|---|---|
+| 1–2 | **Re-entry** | 3 per exercise (2 for arms) | RIR 3 |
+| 3–6 | **Build 1** | Bench 4, others as written | RIR 1–2 |
+| 7 | **Deload** | Half the sets, same weights | RIR 4 |
+| 8–11 | **Build 2** | Bench 4, others as written | RIR 1–2 (small exercises RIR 0–1 on the last set) |
+| 12 | **Test + deload** | Bench: heavy top set of 3–5, then half the sets | RIR 0–1 on the top set |
 
 ### Progression rule (double progression)
-- **All sets reached the top of the rep range** → add the exercise's step next time.
+- **All sets hit the top of the range** → add the step next time.
 - **Any set fell below the range** → one step lighter.
 - **Otherwise** → same weight, beat your reps.
-- **Deload weeks** → same weight, half the sets.
 
 ### Logging machines
-- **Plate-loaded machines** (leg press, T-bar row): log **only the plates**.
-- **Smith machine:** log **plates + bar** (check the bar's sticker once).
-- **Dumbbells:** the weight of **one** dumbbell.
+Plate-loaded: plates only · Smith: plates + bar · Dumbbells: one dumbbell.
 
-### Full Body A — bench focus
+### The workout
 | # | Exercise | Sets × reps | Rest | Start | Step |
 |---|---|---|---|---|---|
-| 1 | Barbell bench press | 3–4 × 5–7 | 3 min | 72.5 kg | +2.5 |
-| 2 | Barbell back squat | 3 × 6–8 | 2.5 min | 40 kg | +5 |
-| 3 | Wide-grip lat pulldown | 3 × 8–12 | 2 min | 55 kg | +5 |
-| 4 | Lying leg curl | 3 × 10–15 | 90 s | 30 kg | +5 |
-| 5a | EZ-bar curl — **superset** | 2–3 × 10–15 | — | 25 kg | +2.5 |
-| 5b | Rope triceps pushdown | 2–3 × 10–15 | 75 s | 25 kg | +2.5 |
+| 1 | Barbell bench press | 3–4 × 5–7 | 2.5 min | 72.5 kg | +2.5 |
+| 2 | Barbell back squat | 3 × 6–8 | 2 min | 40 kg | +5 |
+| 3 | Wide-grip lat pulldown | 3 × 8–12 | 90 s | 55 kg | +5 |
+| 4a | Seated cable row — **superset** | 3 × 10–12 | — | 50 kg | +5 |
+| 4b | Shoulder press machine | 3 × 8–12 | 90 s | 35 kg | +5 |
+| 5a | Lying leg curl — **superset** | 3 × 10–15 | — | 30 kg | +5 |
+| 5b | Cable crunch | 3 × 12–15 | 60 s | 30 kg | +5 |
+| 6a | EZ-bar curl — **superset** | 2 × 10–15 | — | 25 kg | +2.5 |
+| 6b | Rope triceps pushdown | 2 × 10–15 | 60 s | 25 kg | +2.5 |
 
-**Warm-up:** 5 min bike → band pull-aparts ×15, push-up plus ×10, thoracic rotations ×8/side, bodyweight squats ×10 → bench ramp: **bar × 10, 50% × 5, 70% × 3, 85% × 1**.
-**Cool-down:** doorway chest stretch, lat stretch on the rack, couch stretch, hamstring stretch (30–45 s each).
+**Warm-up:** 5 min bike → band pull-aparts ×15, push-up plus ×10, hip circles ×10, bodyweight squats ×10 → bench ramp: **bar × 10, 50% × 5, 70% × 3, 85% × 1**.
+**Cool-down:** doorway chest stretch, lat stretch on the rack, couch stretch, seated hamstring stretch. **+ 15 min cardio** if you have time (or a walk on the rest day).
 
-### Full Body B — volume
-| # | Exercise | Sets × reps | Rest | Start | Step |
-|---|---|---|---|---|---|
-| 1 | Incline dumbbell press | 3–4 × 8–12 | 2 min | 26 kg each | +2 |
-| 2 | Leg press (plates only) | 3 × 10–15 | 2 min | 80 kg | +10 |
-| 3 | Chest-supported T-bar row (plates only) | 3 × 8–12 | 2 min | 40 kg | +5 |
-| 4 | Barbell hip thrust | 3 × 8–12 | 2 min | 50 kg | +5 |
-| 5 | Dumbbell lateral raise | 3 × 12–20 | 60 s | 8 kg | +1 |
-| 6 | Cable crunch | 3 × 12–15 | 60 s | 30 kg | +5 |
-
-**Warm-up:** 5 min rowing → band dislocates ×10, scap push-ups ×10, glute bridge ×12, leg swings ×10/side → incline DB ramp: **50% × 8, 70% × 4, 85% × 1**.
-**Cool-down:** pec stretch on the wall, child's pose with reach, figure-4 glute stretch, quad stretch.
-
-### Full Body C — squat focus
-| # | Exercise | Sets × reps | Rest | Start | Step |
-|---|---|---|---|---|---|
-| 1 | Barbell back squat | 3–4 × 6–8 | 2.5 min | 40 kg | +5 |
-| 2 | Dumbbell bench press | 3 × 8–12 | 2 min | 30 kg each | +2 |
-| 3 | Seated cable row | 3 × 10–12 | 90 s | 50 kg | +5 |
-| 4 | Shoulder press machine | 3 × 8–12 | 2 min | 35 kg | +5 |
-| 5 | 45° back extension | 3 × 10–15 | 90 s | 0 kg (then hold a plate) | +5 |
-| 6a | Dumbbell hammer curl — **superset** | 2–3 × 10–15 | — | 12 kg | +2 |
-| 6b | Overhead rope triceps extension | 2–3 × 10–15 | 75 s | 20 kg | +2.5 |
-| 7 | Standing calf raise machine | 3 × 10–15 | 60 s | 40 kg | +5 |
-
-**Warm-up:** 5 min incline walk → hip circles ×10, goblet squat hold 30 s, world's greatest stretch ×5/side, Cossack squat ×6/side → squat ramp: **bar × 10, 50% × 5, 70% × 3, 85% × 1** (at 40 kg this is mostly the bar; that's fine).
-**Cool-down:** pigeon stretch, standing quad stretch, seated hamstring stretch, knees-to-chest (30–45 s each). **+ log 15 min cardio.**
-
-You don't deadlift, so **hip thrusts and back extensions** train your hips and lower back instead. **Squats twice a week** (A and C) will make them climb quickly from 40 kg.
+Every muscle gets work 3–4 times a week. Chest, back, legs and shoulders are covered by the first five rows; arms and abs are in the supersets. You don't deadlift, so the leg curl covers the back of the legs. Squatting every session will make it climb fast from 40 kg.
 
 ### Cardio
-- **2 × 15–20 min a week**, e.g. after B and C: incline walk at 10–12% and 5–5.5 km/h, or the bike. Your job already burns a lot.
-
-### Example week (flexible)
-Mon A · Wed B · Fri C · (Sat or Sun: the next one if you feel fresh).
+**2 × 15–20 min a week**: after a workout (incline walk 10–12%, 5–5.5 km/h) or as a walk on the rest day.
 
 ---
 

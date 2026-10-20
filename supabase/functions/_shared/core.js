@@ -57,11 +57,8 @@ export const DEFAULT_PRESETS = [
 ];
 
 // Used until the app sends its own program (program.js) with /a/sync.
-export const DEFAULT_SESSIONS = [
-  { id: 'A', name: 'Bütün bədən A' },
-  { id: 'B', name: 'Bütün bədən B' },
-  { id: 'C', name: 'Bütün bədən C' },
-];
+export const DEFAULT_SESSIONS = [{ id: 'FB', name: 'Bütün bədən' }];
+const DEFAULT_RECOVERY_HOURS = 40;   // every second day
 
 export const STARTER_MOTIVATIONS = [
   'Kəpəz də bir günə ucalmıyıf, qağa. Hər məşq bir daşdı — qoy üst-üstə.',
@@ -496,7 +493,8 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     const q = await getKV('queue', { pos: 0 });
     const next = sessions[((q.pos % sessions.length) + sessions.length) % sessions.length];
     const last = [...all.workouts].filter(w => w.finished_at).sort((a, b) => b.finished_at - a.finished_at)[0];
-    const readyAt = last ? last.finished_at + 20 * 3600000 : null;
+    const hours = +meta.recoveryHours > 0 ? +meta.recoveryHours : DEFAULT_RECOVERY_HOURS;
+    const readyAt = last ? last.finished_at + hours * 3600000 : null;
     return { ...next, index: sessions.indexOf(next), readyAt, ready: !readyAt || readyAt <= nowMs, sessions };
   }
   async function advanceQueue(sessionId, skip = false) {
@@ -741,7 +739,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
       };
     },
     async sync(b) {   // the app sends its program's session list so the bot knows names/order
-      if (Array.isArray(b.sessions) && b.sessions.length) await setKV('program', { sessions: b.sessions.map(x => ({ id: String(x.id), name: String(x.name) })) });
+      if (Array.isArray(b.sessions) && b.sessions.length) await setKV('program', { sessions: b.sessions.map(x => ({ id: String(x.id), name: String(x.name) })), recoveryHours: +b.recoveryHours || DEFAULT_RECOVERY_HOURS });
       return {};
     },
     async day(b) {     // food screen for one date

@@ -1,7 +1,7 @@
 // "Bu gün" — the home screen.
 import { S, app, run } from '../store.js';
 import { call } from '../api.js';
-import { esc, fmtL, kg, icon, ring, bar, flameStrip, flame, haptic, toast, openLink, niceDate } from '../ui.js';
+import { esc, fmtL, kg, icon, ring, bar, flameStrip, flame, haptic, toast, openLink, niceDate, addDays } from '../ui.js';
 import { SESSIONS, EXERCISES, PHASES } from '../program.js';
 
 export function greeting(hm) {
@@ -22,7 +22,7 @@ export function header(st, title = null) {
 
 export function readyText(next, today) {
   if (next.ready) return 'Hazırdı — gedəx!';
-  const when = next.readyDate === today ? 'Bu gün' : 'Sabah';
+  const when = next.readyDate === today ? 'Bu gün' : next.readyDate === addDays(today, 1) ? 'Sabah' : next.readyDate === addDays(today, 2) ? 'Birigün' : niceDate(next.readyDate, today);
   return `${when} ${next.readyHm}-dan hazır olajax`;
 }
 
@@ -64,7 +64,7 @@ export function render() {
     <p class="ready ${st.next.ready ? 'ok' : ''}">${readyText(st.next, st.today)}</p>
     <div class="row gap">
       <button class="btn grow fire" data-a="startNext">${st.draft ? 'Davam elə' : 'Başdıyax'}</button>
-      ${st.draft ? '' : '<button class="btn ghost" data-a="skipNext">Ötür</button>'}
+      ${st.draft || SESSIONS.length < 2 ? '' : '<button class="btn ghost" data-a="skipNext">Ötür</button>'}
     </div>
     <label class="switch-row">
       <span>Bu gün işdən boşam</span>

@@ -32,7 +32,7 @@ If the setup step reports `cron: error …`, open the Supabase dashboard → **D
 ## Using it
 
 - **Bu gün:** next workout and when it's ready, day-off switch, score ring, calories, protein, water, supplements, streaks, level.
-- **Məşq:** phase, session queue (A → B → C), start any session or skip one, cardio log.
+- **Məşq:** phase, the one full-body workout (every second day, ready 40 h after the last), cardio log.
 - **Workout screen:** warm-up for that session with ramp-up sets, a moving form demo (tap it for form tips and videos), last time's sets, a suggested weight with the reason, a rest timer, supersets and a new-best pop-up. Your workout is saved as you go, so closing the app loses nothing.
 - **Yemək:** one-tap meals (editable), "Başqa bir şey" with comment and photo, day arrows for logging yesterday.
 - **Nəticə:** rank, 12-week fire tracker, weight and strength charts, best sets, recent workouts, progress photos, badges.

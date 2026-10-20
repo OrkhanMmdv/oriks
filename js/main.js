@@ -2,7 +2,7 @@
 import { S, app, run } from './store.js';
 import { tg, esc, flame, haptic, toast, celebrate, openLink, icon } from './ui.js';
 import { call, ensureIdentity, ApiError } from './api.js';
-import { SESSIONS } from './program.js';
+import { SESSIONS, RECOVERY_HOURS } from './program.js';
 import * as today from './screens/today.js';
 import * as train from './screens/train.js';
 import * as food from './screens/food.js';
@@ -96,7 +96,7 @@ async function boot() {
   app.render();
   if (!(await ensureIdentity())) { S.fatal = ['Telegramdan aç', 'Bu proqram ancax öz botunun içində işdiyir.']; app.render(); return; }
   try {
-    await call('sync', { sessions: SESSIONS.map(s => ({ id: s.id, name: s.name })) });
+    await call('sync', { sessions: SESSIONS.map(s => ({ id: s.id, name: s.name })), recoveryHours: RECOVERY_HOURS });
     await app.refresh(false);
     app.render();
   } catch (e) {

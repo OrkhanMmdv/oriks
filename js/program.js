@@ -130,57 +130,31 @@ export const EXERCISES = {
   },
 };
 
+// How long after finishing a workout the next one counts as "ready" (every second day = ~40 h,
+// so Monday evening → ready Wednesday from late morning).
+export const RECOVERY_HOURS = 40;
+
+// ONE full-body workout, the same every time, ~60 minutes:
+//   warm-up 8 min · lifting ~48 min (supersets save time) · cool-down 4 min.
 export const SESSIONS = [
   {
-    id: 'A', name: 'Bütün bədən A', focus: 'Bençpres günü',
+    id: 'FB', name: 'Bütün bədən', focus: 'Hər dəfə eyni · ~60 dəq',
     warmup: {
       cardio: '5 dəq yüngül velosiped',
-      drills: ['Lentnən pull-apart ×15', 'Push-up plus ×10', 'Döş fırlatma ×8 hər tərəf', 'Bədən çəkisiynən squat ×10'],
+      drills: ['Lentnən pull-apart ×15', 'Push-up plus ×10', 'Omba fırlatma ×10', 'Bədən çəkisiynən squat ×10'],
     },
     exercises: [
-      { key: 'bench', sets: 3, setsBuild: 4, reps: [5, 7], rest: 180, start: 72.5, step: 2.5 },
-      { key: 'squat', sets: 3, reps: [6, 8], rest: 150, start: 40, step: 5 },
-      { key: 'pulldown', sets: 3, reps: [8, 12], rest: 120, start: 55, step: 5 },
-      { key: 'legcurl', sets: 3, reps: [10, 15], rest: 90, start: 30, step: 5 },
-      { key: 'ezcurl', sets: 3, reps: [10, 15], rest: 0, start: 25, step: 2.5, ss: 1 },
-      { key: 'pushdown', sets: 3, reps: [10, 15], rest: 75, start: 25, step: 2.5, ss: 1 },
+      { key: 'bench', sets: 3, setsBuild: 4, reps: [5, 7], rest: 150, start: 72.5, step: 2.5 },
+      { key: 'squat', sets: 3, reps: [6, 8], rest: 120, start: 40, step: 5 },
+      { key: 'pulldown', sets: 3, reps: [8, 12], rest: 90, start: 55, step: 5 },
+      { key: 'cablerow', sets: 3, reps: [10, 12], rest: 0, start: 50, step: 5, ss: 1 },
+      { key: 'shoulderpress', sets: 3, reps: [8, 12], rest: 90, start: 35, step: 5, ss: 1 },
+      { key: 'legcurl', sets: 3, reps: [10, 15], rest: 0, start: 30, step: 5, ss: 2 },
+      { key: 'crunch', sets: 3, reps: [12, 15], rest: 60, start: 30, step: 5, ss: 2 },
+      { key: 'ezcurl', sets: 2, reps: [10, 15], rest: 0, start: 25, step: 2.5, ss: 3 },
+      { key: 'pushdown', sets: 2, reps: [10, 15], rest: 60, start: 25, step: 2.5, ss: 3 },
     ],
-    cooldown: ['Qapı ağzında döş açma 30 san/tərəf', 'Stoykada kürək dartma 30 san/tərəf', 'Diz üstə omba qabağı (couch) 45 san/tərəf', 'Oturaraq arxa bud dartma 45 san'],
-  },
-  {
-    id: 'B', name: 'Bütün bədən B', focus: 'Həcm günü',
-    warmup: {
-      cardio: '5 dəq avarçəkmə trenajoru',
-      drills: ['Lentnən çiyin fırlatma ×10', 'Kürək push-up ×10', 'Omba körpüsü ×12', 'Ayax yelləmə ×10 hər tərəf'],
-    },
-    exercises: [
-      { key: 'inclinedb', sets: 3, setsBuild: 4, reps: [8, 12], rest: 120, start: 26, step: 2 },
-      { key: 'legpress', sets: 3, reps: [10, 15], rest: 120, start: 80, step: 10 },
-      { key: 'tbarrow', sets: 3, reps: [8, 12], rest: 120, start: 40, step: 5 },
-      { key: 'hipthrust', sets: 3, reps: [8, 12], rest: 120, start: 50, step: 5 },
-      { key: 'latraise', sets: 3, reps: [12, 20], rest: 60, start: 8, step: 1 },
-      { key: 'crunch', sets: 3, reps: [12, 15], rest: 60, start: 30, step: 5 },
-    ],
-    cooldown: ['Divarda döş dartma 30 san/tərəf', 'Uşax pozası, qollar qabaxda 45 san', 'Fiqur-4 omba dartma 30 san/tərəf', 'Ayax üstə bud qabağı dartma 30 san/tərəf'],
-    cardio: true,
-  },
-  {
-    id: 'C', name: 'Bütün bədən C', focus: 'Squat günü',
-    warmup: {
-      cardio: '5 dəq maili yeriş',
-      drills: ['Omba fırlatma ×10', 'Goblet squat saxlama 30 san', '"Ən yaxşı dartma" ×5 hər tərəf', 'Kazak squat ×6 hər tərəf'],
-    },
-    exercises: [
-      { key: 'squat', sets: 3, setsBuild: 4, reps: [6, 8], rest: 150, start: 40, step: 5 },
-      { key: 'dbbench', sets: 3, reps: [8, 12], rest: 120, start: 30, step: 2 },
-      { key: 'cablerow', sets: 3, reps: [10, 12], rest: 90, start: 50, step: 5 },
-      { key: 'shoulderpress', sets: 3, reps: [8, 12], rest: 120, start: 35, step: 5 },
-      { key: 'backext', sets: 3, reps: [10, 15], rest: 90, start: 0, step: 5 },
-      { key: 'hammer', sets: 3, reps: [10, 15], rest: 0, start: 12, step: 2, ss: 1 },
-      { key: 'ohtri', sets: 3, reps: [10, 15], rest: 75, start: 20, step: 2.5, ss: 1 },
-      { key: 'calf', sets: 3, reps: [10, 15], rest: 60, start: 40, step: 5 },
-    ],
-    cooldown: ['Göyərçin dartması 45 san/tərəf', 'Ayax üstə bud qabağı 30 san/tərəf', 'Oturaraq arxa bud 45 san', 'Dizləri döşə çək 45 san'],
+    cooldown: ['Qapı ağzında döş açma 30 san/tərəf', 'Stoykada kürək dartma 30 san/tərəf', 'Diz üstə omba qabağı (couch) 30 san/tərəf', 'Oturaraq arxa bud dartma 45 san'],
     cardio: true,
   },
 ];
@@ -188,17 +162,17 @@ export const SESSIONS = [
 // Phases by week. sets(ex, i) decides how many sets an exercise gets.
 export const PHASES = {
   reentry: { name: 'Qayıdış', rir: '3', note: 'Yüngül başdıyırıx: hər hərəkət 3 set, 3 təkrar ehtiyatda saxla.' },
-  build1: { name: 'Güc yığırıx', rir: '1–2', note: 'Birinci hərəkət 4 set. Son setdə 1–2 təkrar ehtiyat qalsın.' },
+  build1: { name: 'Güc yığırıx', rir: '1–2', note: 'Bençpres 4 set, qalanı yazıldığı kimi. Son setdə 1–2 təkrar ehtiyat qalsın.' },
   deload: { name: 'Nəfəs dərmə', rir: '4', note: 'Çəki eyni, setlər yarı. Bədən dincəlsin, qağa.' },
-  build2: { name: 'Güc yığırıx II', rir: '1–2', note: 'Yenə 4 set. Kiçik hərəkətlərdə son set az qala tükənməyə qədər.' },
+  build2: { name: 'Güc yığırıx II', rir: '1–2', note: 'Bençpres yenə 4 set. Kiçik hərəkətlərdə son set az qala tükənməyə qədər.' },
   test: { name: 'Sınax + dincəlmə', rir: '0–1', note: 'Birinci hərəkətdə ağır set: 3–5 təkrar. Qalanı yarı set.' },
 };
 
 export function setsFor(ex, index, phaseId) {
   const base = ex.sets;
-  if (phaseId === 'reentry') return ex.ss ? 2 : Math.min(base, 3);
+  if (phaseId === 'reentry') return Math.min(base, 3);
   if (phaseId === 'deload' || phaseId === 'test') return Math.ceil(base / 2);
-  return index === 0 && ex.setsBuild ? ex.setsBuild : (ex.ss ? Math.min(base, 3) : base);
+  return index === 0 && ex.setsBuild ? ex.setsBuild : base;
 }
 
 // Ramp-up sets before the first lift, from today's working weight.

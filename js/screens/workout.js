@@ -50,8 +50,11 @@ export async function begin(sessionId) {
     let local = null;
     try { local = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { /* ignore */ }
     S.wo = local && local.id === draft.id ? local : (draft.draft && draft.draft.ex ? { ...draft.draft, id: draft.id } : null);
+    // A draft from an older program version can't be resumed safely — start it fresh with the same id.
+    if (S.wo && !SESSIONS.some(x => x.id === S.wo.session && x.exercises.length === S.wo.ex.length)) S.wo = null;
     if (!S.wo) {
       const session = SESSIONS.find(x => x.id === draft.session) || SESSIONS[0];
+      draft.session = session.id;
       S.wo = { ...build(session, S.hist, S.st.cycle.phase.id), id: draft.id, started: draft.started_at };
     }
     toast('Yarımçıx məşq — davam edirix');
