@@ -164,4 +164,22 @@ assert.equal(reset.previousOwner.first_name, 'Orxan'); ok('owner reset reports w
 await msg('/start', stranger);
 assert.match(lastMsg().payload.text, /Xoş gəldin/); assert.equal((await api('state', {}, stranger)).ok, true); ok('after a reset the next /start claims the bot');
 
+console.log('Repair of twice-encoded JSON (first live deploy)');
+{
+  const { resetMigrationCache } = await import('../supabase/functions/_shared/core.js');
+  await msg('/start');  // whoever owns it now, make sure it's OWNER again for this check
+  await h.db.q(`update app.kv set value = jsonb_build_object('id', $1::int, 'chat_id', $1::int, 'first_name', 'Orxan') where key = 'owner'`, [OWNER.id]);
+  const ownerJson = JSON.stringify({ id: OWNER.id, chat_id: OWNER.id, first_name: 'Orxan' });
+  await h.db.q(`update app.kv set value = to_jsonb($1::text) where key = 'owner'`, [ownerJson]);
+  await h.db.q(`update app.kv set value = to_jsonb($1::text) where key = 'migrations'`, [JSON.stringify(['001_schema', '002_seed', '003_import_old_app'])]);
+  await h.db.q(`update app.reminders set weekdays = to_jsonb($1::text), supplements = to_jsonb($2::text)`, ['[1,2,3,4,5,6,7]', '["creatine"]']);
+  assert.equal(typeof (await h.db.q(`select value from app.kv where key = 'owner'`))[0].value, 'string'); ok('broken live state reproduced (owner stored as a string)');
+  resetMigrationCache();
+  const st2 = await api('state');
+  assert.equal(st2.ok, true); ok('owner recognised again after the repair migration');
+  assert.equal(typeof (await h.db.q(`select value from app.kv where key = 'owner'`))[0].value, 'object'); ok('owner row repaired to real JSON');
+  const rems = (await api('reminders')).list; assert.ok(Array.isArray(rems[0].weekdays) && Array.isArray(rems[0].supplements)); ok('reminder lists repaired');
+  const mig = (await h.db.q(`select value from app.kv where key = 'migrations'`))[0].value; assert.ok(Array.isArray(mig) && mig.includes('004_fix_double_json')); ok('migration list repaired');
+}
+
 console.log(`\nAll ${passed} checks passed.`);

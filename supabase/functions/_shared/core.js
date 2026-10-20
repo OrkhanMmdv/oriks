@@ -227,9 +227,14 @@ const MIGRATIONS = [
   ['002_seed', async db => {
     for (const t of STARTER_MOTIVATIONS) await db.q('insert into app.motivations (text, mine) values ($1, false)', [t]);
     for (const r of DEFAULT_REMINDERS) {
-      await db.q('insert into app.reminders (label, kind, time, supplements, weekdays) values ($1,$2,$3,$4::jsonb,$5::jsonb)',
+      await db.q('insert into app.reminders (label, kind, time, supplements, weekdays) values ($1,$2,$3,$4::text::jsonb,$5::text::jsonb)',
         [r.label, r.kind, r.time, JSON.stringify(r.supplements || []), JSON.stringify(r.weekdays || [1, 2, 3, 4, 5, 6, 7])]);
     }
+  }],
+  ['004_fix_double_json', async db => {
+    // The first deploy stored kv values, reminder lists and drafts as JSON strings; turn them back into JSON.
+    const fix = (table, col) => db.q(`update app.${table} set ${col} = (${col} #>> '{}')::jsonb where jsonb_typeof(${col}) = 'string' and left(ltrim(${col} #>> '{}'), 1) in ('[', '{')`);
+    await fix('kv', 'value'); await fix('reminders', 'supplements'); await fix('reminders', 'weekdays'); await fix('workouts', 'draft');
   }],
   ['003_import_old_app', async db => {
     // Copy what the previous version (public.* tables) stored. Each step is optional.
@@ -244,17 +249,23 @@ const MIGRATIONS = [
   }],
 ];
 
+// postgres.js once stored some JSON twice-encoded (as a JSON string); always read through this.
+export function asJson(v) {
+  if (typeof v !== 'string') return v;
+  try { return JSON.parse(v); } catch { return v; }
+}
+
 let migrated = null;
 export function ensureSchema(db) {
   if (!migrated) {
     migrated = (async () => {
       await db.exec('create schema if not exists app; create table if not exists app.kv (key text primary key, value jsonb);');
-      const done = (await db.q(`select value from app.kv where key = 'migrations'`))[0]?.value || [];
+      const done = asJson((await db.q(`select value from app.kv where key = 'migrations'`))[0]?.value) || [];
       for (const [id, run] of MIGRATIONS) {
         if (done.includes(id)) continue;
         await run(db);
         done.push(id);
-        await db.q(`insert into app.kv (key, value) values ('migrations', $1::jsonb) on conflict (key) do update set value = excluded.value`, [JSON.stringify(done)]);
+        await db.q(`insert into app.kv (key, value) values ('migrations', $1::text::jsonb) on conflict (key) do update set value = excluded.value`, [JSON.stringify(done)]);
       }
     })().catch(e => { migrated = null; throw e; });
   }
@@ -273,9 +284,9 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
   /* ---------- kv ---------- */
   const getKV = async (key, def) => {
     const r = await db.q('select value from app.kv where key = $1', [key]);
-    return r.length && r[0].value != null ? r[0].value : def;
+    return r.length && r[0].value != null ? asJson(r[0].value) : def;
   };
-  const setKV = (key, value) => db.q('insert into app.kv (key, value) values ($1, $2::jsonb) on conflict (key) do update set value = excluded.value', [key, JSON.stringify(value)]);
+  const setKV = (key, value) => db.q('insert into app.kv (key, value) values ($1, $2::text::jsonb) on conflict (key) do update set value = excluded.value', [key, JSON.stringify(value)]);
   const settings = async () => ({ ...DEFAULT_SETTINGS, ...(await getKV('settings', {})) });
   const presets = async () => getKV('presets', DEFAULT_PRESETS);
   const programMeta = async () => getKV('program', { sessions: DEFAULT_SESSIONS });
@@ -584,6 +595,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
 
   /* ---------- reminders (cron every 5 minutes) ---------- */
   async function reminderMessage(r, ctx, force = false) {
+    r = { ...r, supplements: asJson(r.supplements) || [] };
     const { g, s, all, todayDate, nowMs } = ctx;
     const t = g.today;
     const suppButtons = ids => ({ inline_keyboard: [ids.map(id => ({ text: '✅ ' + ((s.supps.find(x => x.id === id) || {}).name || id), callback_data: 'supp:' + id }))] });
@@ -638,6 +650,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     for (const r of reminders) {
       const due = hmToMin(r.time);
       if (r.last_sent === L.date) continue;
+      r.weekdays = asJson(r.weekdays); r.supplements = asJson(r.supplements);
       if (!(r.weekdays || []).includes(L.weekday)) continue;
       if (L.minutes < due || L.minutes >= due + 60) continue;      // a one-hour window survives missed ticks
       ctx ||= await refresh();
@@ -718,7 +731,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
         today: todayDate, nowHm: local(nowMs).hm, settings: s, presets: await presets(),
         cycle: cycleWeek(s, todayDate), motivation: await motivationOfDay(todayDate),
         next: { id: ns.id, name: ns.name, ready: ns.ready, readyAt: ns.readyAt, readyHm: ns.readyAt ? local(ns.readyAt).hm : null, readyDate: ns.readyAt ? local(ns.readyAt).date : null },
-        draft: draft ? { id: draft.id, session: draft.session, started_at: draft.started_at, draft: draft.draft } : null,
+        draft: draft ? { id: draft.id, session: draft.session, started_at: draft.started_at, draft: asJson(draft.draft) } : null,
         dayoff: all.dayoff.some(x => x.date === todayDate),
         score: g.today, streaks: g.streaks, atRisk: g.atRisk,
         level: { level: g.level, xp: g.xp, levelXp: g.levelXp, levelNeed: g.levelNeed, rank: g.rank.name },
@@ -774,10 +787,10 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
       if (open) return { id: open.id, resumed: true };
       const s = await settings();
       const cw = cycleWeek(s, local(now()).date);
-      const r = await db.q('insert into app.workouts (session, week, started_at, notes, draft) values ($1,$2,$3,$4,$5::jsonb) returning id', [b.session, cw.week, now(), '', JSON.stringify(b.draft || {})]);
+      const r = await db.q('insert into app.workouts (session, week, started_at, notes, draft) values ($1,$2,$3,$4,$5::text::jsonb) returning id', [b.session, cw.week, now(), '', JSON.stringify(b.draft || {})]);
       return { id: r[0].id };
     },
-    async workout_draft(b) { await db.q('update app.workouts set draft = $2::jsonb where id = $1 and finished_at is null', [b.id, JSON.stringify(b.draft || {})]); return {}; },
+    async workout_draft(b) { await db.q('update app.workouts set draft = $2::text::jsonb where id = $1 and finished_at is null', [b.id, JSON.stringify(b.draft || {})]); return {}; },
     async workout_finish(b) {
       const w = (await db.q('select * from app.workouts where id = $1', [b.id]))[0];
       if (!w) throw new Error('workout not found');
@@ -856,7 +869,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     },
     async motivation_delete(b) { await db.q('delete from app.motivations where id = $1 and mine', [b.id]); return {}; },
 
-    async reminders() { return { list: await db.q('select * from app.reminders order by time') }; },
+    async reminders() { return { list: (await db.q('select * from app.reminders order by time')).map(r => ({ ...r, weekdays: asJson(r.weekdays), supplements: asJson(r.supplements) })) }; },
     async reminder_update(b) {
       if (b.time != null && !/^\d{2}:\d{2}$/.test(b.time)) throw new Error('bad time');
       await db.q('update app.reminders set time = coalesce($2, time), enabled = coalesce($3, enabled), last_sent = null where id = $1', [b.id, b.time ?? null, b.enabled ?? null]);
