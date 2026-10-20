@@ -1,0 +1,51 @@
+# Runs on every push to main (and by hand from the Actions tab):
+# 1. end-to-end API tests with a fake bot, 2. deploy the Edge Function to Supabase,
+# 3. call /setup (webhook + secret token, menu button, bot commands, 5-minute reminder cron).
+# The mini app itself is served by GitHub Pages from this same branch.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency: deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_REF: yjuujzeukhlsphibluwv
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test the API end to end (fake token)
+        working-directory: dev
+        run: npm install --no-audit --no-fund && node test.mjs
+
+      - name: Check secrets are set
+        run: |
+          test -n "${{ secrets.BOT_TOKEN }}" || { echo "::error::Add the BOT_TOKEN secret (Settings → Secrets and variables → Actions)"; exit 1; }
+          test -n "$SUPABASE_ACCESS_TOKEN" || { echo "::error::Add the SUPABASE_ACCESS_TOKEN secret"; exit 1; }
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Store the bot token in Supabase
+        run: supabase secrets set BOT_TOKEN="${{ secrets.BOT_TOKEN }}" --project-ref "$PROJECT_REF"
+
+      - name: Deploy the Edge Function
+        run: supabase functions deploy pehlevan --project-ref "$PROJECT_REF" --no-verify-jwt --use-api
+
+      - name: Set webhook, menu button, commands and reminders
+        run: |
+          sleep 5
+          curl -fsS -X POST "https://$PROJECT_REF.supabase.co/functions/v1/pehlevan/setup" \
+            -H "x-setup-token: ${{ secrets.BOT_TOKEN }}"
+          echo

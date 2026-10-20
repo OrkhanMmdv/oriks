@@ -1,0 +1,6 @@
+project_id = "yjuujzeukhlsphibluwv"
+
+# Telegram calls the webhook without a Supabase JWT; the function checks
+# Telegram's signatures itself (initData HMAC, webhook secret header, cron key).
+[functions.pehlevan]
+verify_jwt = false
