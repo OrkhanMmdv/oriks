@@ -301,11 +301,13 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
   }
   const ownerInfo = () => getKV('owner', null);
   async function sendOwner(text, extra = {}) {
+    appUrlCache ||= await getKV('app_url', null);
     const o = await ownerInfo();
     if (!o) return null;
     return tg('sendMessage', { chat_id: o.chat_id, text, parse_mode: 'HTML', ...extra });
   }
-  const openAppButton = () => ({ inline_keyboard: [[{ text: 'Proqramı aç', web_app: { url: env.APP_URL } }]] });
+  let appUrlCache = null;
+  const openAppButton = () => ({ inline_keyboard: [[{ text: 'Proqramı aç', web_app: { url: appUrlCache || env.APP_URL } }]] });
 
   /* ---------- load everything (one owner, small data) ---------- */
   async function loadAll() {
@@ -920,6 +922,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
 
   /* ---------- Telegram webhook ---------- */
   async function onUpdate(u) {
+    appUrlCache ||= await getKV('app_url', null);
     const owner = await ownerInfo();
     if (u.message) {
       const m = u.message, from = m.from || {}, text = (m.text || '').trim();
@@ -980,7 +983,10 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     await ensureSchema(db);
     const whSecret = await derivedSecret(token, 'webhook');
     report.webhook = (await tg('setWebhook', { url: env.FUNC_URL + '/webhook', secret_token: whSecret, allowed_updates: ['message', 'callback_query'] })).ok;
-    report.menu = (await tg('setChatMenuButton', { menu_button: { type: 'web_app', text: 'Aç', web_app: { url: env.APP_URL } } })).ok;
+    // A new ?v= on every deploy makes Telegram fetch the fresh app instead of an old saved copy.
+    const appUrl = env.APP_URL + (env.APP_URL.includes('?') ? '&' : '?') + 'v=' + now();
+    await setKV('app_url', appUrl);
+    report.menu = (await tg('setChatMenuButton', { menu_button: { type: 'web_app', text: 'Aç', web_app: { url: appUrl } } })).ok;
     report.commands = (await tg('setMyCommands', { commands: [{ command: 'start', description: 'Başdıyax' }, { command: 'today', description: 'Bu günün hesabı' }] })).ok;
     if (env.DEV) report.cron = 'skipped locally';
     else {

@@ -5,10 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pəhləvan</title>
 <meta name="color-scheme" content="light dark">
+<meta http-equiv="Cache-Control" content="no-cache">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/app.css">
+<script>
+  // Cache-busting: Telegram keeps old copies of the app's files. Every module and the stylesheet
+  // get a version that changes every 10 minutes (GitHub Pages' own cache time), via an import map,
+  // so an update reaches the phone at most ~10 minutes after it's pushed.
+  (function () {
+    var V = String(Math.floor(Date.now() / 600000));
+    var mods = ['main', 'api', 'ui', 'store', 'program', 'screens/today', 'screens/train', 'screens/workout', 'screens/food', 'screens/progress', 'screens/more'];
+    var map = { imports: {} };
+    mods.forEach(function (m) { map.imports[new URL('js/' + m + '.js', location.href).href] = new URL('js/' + m + '.js?v=' + V, location.href).href; });
+    var im = document.createElement('script'); im.type = 'importmap'; im.textContent = JSON.stringify(map);
+    document.currentScript.after(im);
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'css/app.css?v=' + V;
+    document.head.appendChild(css);
+    window.__V = V;
+  })();
+</script>
 </head>
 <body>
 <main id="view" aria-live="polite"></main>
@@ -19,6 +35,6 @@
   <button data-tab="progress"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 19h16M7 15l4-5 3 3 5-7"/></svg><span>Nəticə</span></button>
   <button data-tab="more"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg><span>Qalanı</span></button>
 </nav>
-<script type="module" src="js/main.js"></script>
+<script type="module">import "./js/main.js";</script>
 </body>
 </html>
