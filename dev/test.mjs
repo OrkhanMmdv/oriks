@@ -62,7 +62,7 @@ st = await api('state');
 assert.equal(st.score.kcal, 1770); assert.equal(st.score.protein, 179);
 assert.equal(st.score.kcalTarget, 1900); assert.equal(st.score.trainDay, true); ok('Monday is a gym day: 1,900 kcal target');
 assert.equal((await api('day', { date: '2026-10-27' })).kcalTarget, 1800); ok('Tuesday is a rest day: 1,800 kcal target');
-assert.equal(st.settings.goalWeight, 94); assert.equal(st.settings.startWeight, 109); assert.equal(st.cycle.weeks, 8); ok('goals: 109 → 94 kg, 8-week block'); assert.equal(st.score.parts.supp, 10); assert.equal(st.score.parts.sweets, 10);
+assert.equal(st.settings.goalWeight, 94); assert.equal(st.settings.blockGoal, 98); assert.equal(st.settings.goalRate, 1.4); assert.equal(st.settings.startWeight, 109); assert.equal(st.cycle.weeks, 8); ok('goals: 109 → 98 kg in 8 weeks (−1.4 kg/week), 94 kg long-term'); assert.equal(st.score.parts.supp, 10); assert.equal(st.score.parts.sweets, 10);
 ok(`score computed on the server (${st.score.total}/100)`);
 await api('meal_update', { id: custom.id, name: 'Balıx və kartof', kcal: 480, protein: 46, comment: 'yağsız' });
 const day = await api('day', { date: today });

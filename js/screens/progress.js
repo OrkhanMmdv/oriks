@@ -28,15 +28,15 @@ export function render() {
   const start = p.startWeight, goalW = p.goalWeight;
   const nowW = p.allWeights.length ? p.allWeights[p.allWeights.length - 1].kg : start;
   const lost = Math.round((start - nowW) * 10) / 10;
-  const blockAim = Math.round((start - st.cycle.weeks * p.goalRate) * 10) / 10;
+  const blockAim = p.blockGoal || Math.round((start - st.cycle.weeks * p.goalRate) * 10) / 10;
   const waistRows = p.waist.slice(-6).reverse();
 
   return `${header(st, 'Nəticə')}
   <article class="card goal-card">
     <p class="label gold">Hədəf</p>
-    <div class="goal-row"><div><b>${kg(start)}</b><span>başlanğıc</span></div><div class="now"><b>${kg(nowW)}</b><span>indi</span></div><div><b>${kg(goalW)}</b><span>hədəf</span></div></div>
-    ${bar(Math.max(0, start - nowW), Math.max(1, start - goalW), 'ember thick')}
-    <p class="muted small">${lost > 0 ? `${kg(lost)} kq atmısan, qağa` : 'Başdıyırıx'} · ${st.cycle.weeks} həftəlik hədəf ≈ ${kg(blockAim)} kq · uzun hədəf ${kg(goalW)} kq</p>
+    <div class="goal-row"><div><b>${kg(start)}</b><span>başlanğıc</span></div><div class="now"><b>${kg(nowW)}</b><span>indi</span></div><div><b>${kg(blockAim)}</b><span>${st.cycle.weeks} həftəyə hədəf</span></div></div>
+    ${bar(Math.max(0, start - nowW), Math.max(1, start - blockAim), 'ember thick')}
+    <p class="muted small">${lost > 0 ? `${kg(lost)} kq atmısan, qağa — hələ ${kg(Math.max(0, nowW - blockAim))} kq qalıf` : `Hədəf: −${kg(start - blockAim)} kq, həftədə ~${p.goalRate} kq`} · uzun hədəf ${kg(goalW)} kq</p>
   </article>
 
   <article class="card rank-card">

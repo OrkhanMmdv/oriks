@@ -12,7 +12,7 @@ The training program the app uses is in `js/program.js`.
 | Age / height | 20 · 177 cm |
 | **Start weight** | **109 kg** |
 | **Long-term goal** | **94 kg** |
-| **8-week aim** | **~100–101 kg** (about 1 kg a week) |
+| **8-week goal** | **98 kg** (−11 kg ≈ **1.4 kg a week**) |
 | Work | Mon–Fri 08:00–17:00, ~8,000 steps (cleaning, bending, squatting, making beds) |
 | Gym | **Mon / Wed / Fri, 18:00–19:00**, GYM LATVIA |
 | Sleep | Aim **22:30 → 06:30–07:00** (7–9 h) |
@@ -33,7 +33,8 @@ The training program the app uses is in `js/program.js`.
 **How it's calculated:**
 - BMR (Mifflin–St Jeor, male): 10 × 109 + 6.25 × 177 − 5 × 20 + 5 = **2,101 kcal**.
 - × 1.55 for an active job + 3 gym sessions ≈ **3,250 kcal** maintenance.
-- The average intake is **~1,840 kcal**, so the deficit is **~1,400 kcal a day ≈ 1.2–1.3 kg a week**. We aim for ~1 kg a week, because the job, the steps and the gym might burn a bit less than the formula says.
+- The average intake is **~1,840 kcal**, so the deficit is **~1,400 kcal a day ≈ 1.25 kg of fat a week ≈ 10 kg in 8 weeks**. The first 1–2 weeks also drop 1.5–2 kg of water and stored carbs, so **98 kg in 8 weeks is reachable**. But you need almost perfect consistency, because calories can't go lower than 1,800 (your limit).
+- **What makes the difference to reach 98:** log every meal, hit the steps (8,000+ on work days, **10,000 on weekends**), sleep 7+ hours, and do all 3 workouts each week. Cutting calories below 1,800 is not the answer.
 - **Never go below 1,800 kcal.** If you lose more than 1.5 kg a week for 2 weeks in a row (after week 2), add 100–150 kcal. If your weekly average doesn't drop for 2–3 weeks, check that you're logging everything first, then take off 100 kcal from carbs (still never below 1,800).
 
 ---
@@ -148,20 +149,21 @@ You can change each time, switch it on or off, or **Test** it in Qalanı → Xat
 - **Weight:** in the morning after the toilet, before food, **Mon / Wed / Fri**. Just send the number to the bot. The app charts the **weekly average**.
 - **Every 2 weeks:** **waist at belly-button level** (Nəticə → Bel ölçüsü), **front + side photos**, and compare strength.
 - **Adjust** (we do it together in the weekly "Claude ilə baxış" review):
-  - Losing **0.5–1.3 kg a week** → keep going.
+  - Losing **1.2–1.6 kg a week** (weekly average) → on track for 98 kg, keep going.
+  - Losing **0.8–1.2 kg a week** → add 2,000 steps a day before touching food.
   - **No drop for 2–3 weeks** → check your logging, then −100 kcal (still ≥ 1,800).
   - **Dropping very fast, or tired/weak** → +100–150 kcal and more sleep.
 
 ## 8. Expected progress (estimates, not promises)
 
-| Week | Weight |
-|---|---|
-| Start | 109 kg |
-| Week 2 | 106.5–107.5 kg (includes water; creatine adds some back) |
-| Week 4 | 104.5–105.5 kg |
-| Week 6 | 102.5–104 kg |
-| **Week 8** | **~100–102 kg** |
-| 94 kg | ~week 14–17, then switch to maintenance + strength |
+| Week | Goal path (−1.4 kg/week) | Realistic range |
+|---|---|---|
+| Start | 109 kg | 109 kg |
+| Week 2 | 106.2 kg | 106–107.5 kg (includes water; creatine adds some back) |
+| Week 4 | 103.4 kg | 103.5–105 kg |
+| Week 6 | 100.6 kg | 101–103 kg |
+| **Week 8** | **98 kg** | **98–101 kg** |
+| 94 kg | — | ~week 11–14, then switch to maintenance + strength |
 
 Bench should stay around 95–100 kg estimated max. Squat should climb quickly from 40 kg because it's new to you.
 

@@ -27,8 +27,9 @@ export const DEFAULT_SETTINGS = {
   water: 3500,            // ml per day
   waterTrainBonus: 500,   // extra ml on training days
   startWeight: 109,
-  goalWeight: 94,         // long-term goal; the 8-week block aims for ~100 kg
-  goalRate: 1.0,          // kg lost per week (0.5–1.3 is fine)
+  blockGoal: 98,          // goal at the end of this 8-week block (109 → 98 = −11 kg)
+  goalWeight: 94,         // long-term goal
+  goalRate: 1.4,          // kg lost per week needed for the block goal (11 kg / 8 weeks)
   keySupp: 'creatine',
   benchGoal: 105,         // estimated 1RM for the "Bench goal" badge
   squatGoal: 100,
@@ -252,6 +253,12 @@ const MIGRATIONS = [
       `insert into app.study_notes (date, extra, note) select day::text, extra_min, note from public.study_days on conflict do nothing`,
     ];
     for (const s of steps) { try { await db.q(s); } catch { /* table missing: nothing to import */ } }
+  }],
+  ['006_block_goal_98', async db => {
+    // 8-week goal: 98 kg (−11 kg ≈ 1.4 kg/week). Long-term goal stays 94 kg.
+    const cur = asJson((await db.q(`select value from app.kv where key = 'settings'`))[0]?.value) || {};
+    cur.blockGoal = 98; cur.goalRate = 1.4;
+    await db.q(`insert into app.kv (key, value) values ('settings', $1::text::jsonb) on conflict (key) do update set value = excluded.value`, [JSON.stringify(cur)]);
   }],
   ['005_plan_v2', async db => {
     // New 8-week plan: 1,900/1,800 kcal, start 109 kg → 94 kg, reminders 10 min before each action,
@@ -741,7 +748,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     const L = [];
     const cw = cycleWeek(s, todayDate);
     L.push(`PƏHLƏVAN REVIEW — last ${days} days (${from} → ${todayDate})`);
-    L.push(`Athlete: ${s.name}, cycle week ${cw.week}/${cw.weeks} (${cw.phase.name}). Start ${s.startWeight} kg → goal ${s.goalWeight} kg. Targets: ${s.kcalTrain} kcal gym days / ${s.kcalRest} kcal rest days, ${s.protein} g protein, ${fmtL(s.water)} L water, goal rate −${s.goalRate} kg/week.`);
+    L.push(`Athlete: ${s.name}, cycle week ${cw.week}/${cw.weeks} (${cw.phase.name}). Start ${s.startWeight} kg → 8-week goal ${s.blockGoal} kg → long-term ${s.goalWeight} kg. Targets: ${s.kcalTrain} kcal gym days / ${s.kcalRest} kcal rest days, ${s.protein} g protein, ${fmtL(s.water)} L water, goal rate −${s.goalRate} kg/week.`);
     L.push('');
     L.push('WORKOUTS');
     const ws = all.workouts.filter(w => w.finished_at && local(w.finished_at).date >= from);
@@ -915,7 +922,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
       return {
         level: { level: g.level, xp: g.xp, levelXp: g.levelXp, levelNeed: g.levelNeed, rank: g.rank.name, parts: g.xpParts },
         ranks: RANKS, tracker: g.tracker, badges: g.badges, best: g.best, trend, oldBest: s.oldBest,
-        weights: Object.values(weekly), allWeights: all.weights, goalRate: s.goalRate, goalWeight: s.goalWeight, startWeight: s.startWeight, waist,
+        weights: Object.values(weekly), allWeights: all.weights, goalRate: s.goalRate, goalWeight: s.goalWeight, blockGoal: s.blockGoal, startWeight: s.startWeight, waist,
         recent, photos: all.photos.filter(p => p.kind === 'progress').reverse(), streaks: g.streaks,
       };
     },
@@ -963,7 +970,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     },
     async settings_save(b) {
       const cur = await getKV('settings', {});
-      const allowed = ['name', 'cycleStart', 'cycleWeeks', 'playlist', 'kcal', 'kcalTrain', 'kcalRest', 'protein', 'water', 'startWeight', 'goalWeight', 'goalRate', 'trainDays', 'benchGoal', 'squatGoal', 'studyPlan', 'studyGoal'];
+      const allowed = ['name', 'cycleStart', 'cycleWeeks', 'playlist', 'kcal', 'kcalTrain', 'kcalRest', 'protein', 'water', 'startWeight', 'blockGoal', 'goalWeight', 'goalRate', 'trainDays', 'benchGoal', 'squatGoal', 'studyPlan', 'studyGoal'];
       for (const k of allowed) if (b[k] !== undefined) cur[k] = b[k];
       await setKV('settings', cur);
       return { settings: await settings() };
