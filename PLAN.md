@@ -131,9 +131,11 @@ Progression (the app suggests every weight): when all sets hit the top of the re
 | Time | Reminder | Smart rule |
 |---|---|---|
 | **06:50** | Morning: water + coffee, motivation, today's target · **Mon/Wed/Fri: weigh yourself** | Weigh-in line skipped once weighed |
-| **12:20** | Lunch + **creatine**, D3, omega-3, multi | Buttons log lunch and each supplement; skipped if all done |
+| **12:20** | Lunch + **creatine** | Buttons log lunch and creatine; skipped if both done |
+| **12:20** | **Vitamins** with lunch: D3, Omega-3, Multivitamin | Tick buttons; skipped if all taken |
 | 15:00 | Water check | Only if under half the target |
-| **16:20** | Snack / pre-gym: skyr + fruit + whey | Skipped once logged |
+| **16:20** | Snack / pre-gym: skyr + fruit | Skipped once logged |
+| **16:20** | **Protein shake:** whey 30 g + water | "Whey içdim" logs it (+24 g protein); skipped once logged |
 | **17:50** (Mon/Wed/Fri) | Gym at 18:00 | Only if the workout is ready and not done today |
 | **19:50** | Dinner: cottage cheese | Shows how much protein and kcal is left; skipped once logged |
 | 21:30 | Evening check-in (close the day) | Skipped if the day is already closed |

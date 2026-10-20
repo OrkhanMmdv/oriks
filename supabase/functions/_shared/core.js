@@ -53,13 +53,13 @@ export const DEFAULT_SETTINGS = {
 export const DEFAULT_PRESETS = [
   { id: 'lunch_train', name: 'Nahar (məşq günü): toyux 220 q, düyü 250 q, tərəvəz, yağ 10 q', kcal: 865, protein: 80 },
   { id: 'lunch_rest', name: 'Nahar (istirahət): toyux 220 q, düyü 220 q, tərəvəz, yağ 10 q', kcal: 840, protein: 80 },
-  { id: 'snack_train', name: 'Ara: skyr 250 q + banan + whey 30 q', kcal: 385, protein: 53 },
-  { id: 'snack_rest', name: 'Ara: skyr 250 q + alma + whey 30 q', kcal: 355, protein: 52 },
+  { id: 'snack_train', name: 'Ara: skyr 250 q + banan', kcal: 265, protein: 29 },
+  { id: 'snack_rest', name: 'Ara: skyr 250 q + alma', kcal: 235, protein: 28 },
   { id: 'dinner_train', name: 'Şam: kəsmik 300 q, giləmeyvə, qoz 15 q, çörək 50 q', kcal: 630, protein: 58 },
   { id: 'dinner_rest', name: 'Şam (istirahət): kəsmik 300 q, giləmeyvə, qoz 15 q, çörək 40 q', kcal: 605, protein: 57 },
   { id: 'coffee', name: 'Qara kofe / şəkərsiz çay', kcal: 5, protein: 0 },
   { id: 'egg', name: 'Qaynadılmış yumurta', kcal: 78, protein: 6 },
-  { id: 'shake', name: 'Whey 30 q (su ilə)', kcal: 120, protein: 24 },
+  { id: 'shake', name: 'Protein kokteyli: whey 30 q (su ilə)', kcal: 120, protein: 24 },
   { id: 'cottage', name: 'Kəsmik 300 q (5%)', kcal: 365, protein: 51 },
   { id: 'dessert', name: 'Şirniyyat', kcal: 250, protein: 4 },
   { id: 'fastfood', name: 'Fast food', kcal: 900, protein: 35 },
@@ -86,9 +86,11 @@ export const STARTER_MOTIVATIONS = [
 // Every reminder fires 10 minutes BEFORE the thing it's about (Europe/Riga time).
 const DEFAULT_REMINDERS = [
   { label: 'Səhər: su + kofe (07:00) · B.e/Ç/C çəki', kind: 'morning', time: '06:50' },
-  { label: 'Nahar + kreatin (12:30)', kind: 'lunch', time: '12:20', supplements: ['creatine', 'vitd', 'omega3', 'multi'] },
+  { label: 'Nahar + kreatin (12:30)', kind: 'lunch', time: '12:20', supplements: ['creatine'] },
+  { label: 'Vitaminlər naharnan: D3, Omeqa-3, Multi', kind: 'vitamins', time: '12:20', supplements: ['vitd', 'omega3', 'multi'] },
   { label: 'Su yoxlaması', kind: 'water', time: '15:00' },
-  { label: 'Ara yeməyi: skyr + whey (16:30)', kind: 'snack', time: '16:20' },
+  { label: 'Ara yeməyi: skyr + meyvə (16:30)', kind: 'snack', time: '16:20' },
+  { label: 'Protein kokteyli: whey 30 q (16:30)', kind: 'shake', time: '16:20' },
   { label: 'Zal (18:00)', kind: 'workout', time: '17:50', weekdays: [1, 3, 5] },
   { label: 'Şam: kəsmik (20:00)', kind: 'dinner', time: '19:50' },
   { label: 'Axşam yoxlaması', kind: 'checkin', time: '21:30' },
@@ -253,6 +255,15 @@ const MIGRATIONS = [
       `insert into app.study_notes (date, extra, note) select day::text, extra_min, note from public.study_days on conflict do nothing`,
     ];
     for (const s of steps) { try { await db.q(s); } catch { /* table missing: nothing to import */ } }
+  }],
+  ['007_vitamin_shake_reminders', async db => {
+    // Separate reminders for vitamins (12:20) and the protein shake (16:20); whey is its own preset now.
+    await db.q(`delete from app.kv where key = 'presets'`);
+    await db.q('delete from app.reminders');
+    for (const r of DEFAULT_REMINDERS) {
+      await db.q('insert into app.reminders (label, kind, time, supplements, weekdays) values ($1,$2,$3,$4::text::jsonb,$5::text::jsonb)',
+        [r.label, r.kind, r.time, JSON.stringify(r.supplements || []), JSON.stringify(r.weekdays || [1, 2, 3, 4, 5, 6, 7])]);
+    }
   }],
   ['006_block_goal_98', async db => {
     // 8-week goal: 98 kg (−11 kg ≈ 1.4 kg/week). Long-term goal stays 94 kg.
@@ -662,13 +673,27 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
         const rows = [];
         if (!logged('lunch')) rows.push([mealButton('lunch', `Nahar yedim (${p ? p.kcal : ''} kkal)`)]);
         for (let i = 0; i < left.length; i += 2) rows.push(left.slice(i, i + 2).map(id => ({ text: '✅ ' + ((s.supps.find(x => x.id === id) || {}).name || id), callback_data: 'supp:' + id })));
-        return { text: `10 dəqiqəyə nahar, qağa (12:30):\n<b>${p ? p.name.replace(/^Nahar[^:]*:\s*/, '') : 'toyux + düyü + tərəvəz'}</b>\nKreatin 5 q-nı da naharnan iç.`, markup: { inline_keyboard: rows } };
+        return { text: `10 dəqiqəyə nahar, qağa (12:30):\n<b>${p ? p.name.replace(/^Nahar[^:]*:\s*/, '') : 'toyux + düyü + tərəvəz'}</b>\nKreatin 5 q-nı da naharnan iç (vitaminlər ayrıca mesajda).`, markup: { inline_keyboard: rows } };
+      }
+      case 'vitamins': {
+        // 10 min before 12:30: vitamins go with lunch (D3 and omega-3 need some fat from the meal).
+        const left = (r.supplements || []).filter(id => !t.supps.includes(id));
+        if (!left.length && !force) return null;
+        const ids = left.length ? left : r.supplements;
+        const names = ids.map(id => (s.supps.find(x => x.id === id) || {}).name || id).join(', ');
+        return { text: `Vitaminlər naharnan, qağa: <b>${names}</b>\nYeməyin yanında iç — D3 və Omeqa-3 yağnan yaxşı sorulur.`, markup: { inline_keyboard: [ids.map(id => ({ text: '✅ ' + ((s.supps.find(x => x.id === id) || {}).name || id), callback_data: 'supp:' + id }))] } };
+      }
+      case 'shake': {
+        // 10 min before 16:30: whey 30 g with water (≈120 kcal, 24 g protein).
+        if (todaysMeals.some(m => m.preset === 'shake') && !force) return null;
+        const protLeft = Math.max(0, s.protein - t.protein);
+        return { text: `10 dəqiqəyə protein kokteyli (16:30): <b>whey 30 q + su</b>\n+24 q zülal · hələ ${protLeft} q zülal qalıf.${train ? '\nZala qabax əla yanacaxdı.' : ''}`, markup: { inline_keyboard: [[{ text: 'Whey içdim ✅', callback_data: 'meal:shake' }]] } };
       }
       case 'snack': {
         // 10 min before 16:30: skyr + fruit + whey (pre-workout on gym days).
         if (logged('snack') && !force) return null;
         const p = await preset('snack');
-        return { text: `10 dəqiqəyə ara yeməyi (16:30):\n<b>${p ? p.name.replace(/^Ara:\s*/, '') : 'skyr + meyvə + whey'}</b>${train ? '\nMəşqdən qabax enerji — zala 1.5 saat qalıf.' : ''}`, markup: { inline_keyboard: [[mealButton('snack', 'Yedim ✅')]] } };
+        return { text: `10 dəqiqəyə ara yeməyi (16:30):\n<b>${p ? p.name.replace(/^Ara:\s*/, '') : 'skyr + meyvə'}</b> + protein kokteyli (ayrıca xatırladıram)${train ? '\nMəşqdən qabax enerji — zala 1.5 saat qalıf.' : ''}`, markup: { inline_keyboard: [[mealButton('snack', 'Yedim ✅')]] } };
       }
       case 'dinner': {
         // 10 min before 20:00: cottage cheese dinner.

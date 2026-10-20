@@ -91,6 +91,7 @@ function menuCard(st, d) {
     ['07:00', 'coffee', 'Su 300–500 ml + qara kofe (yumurta — istəsən)'],
     ['12:30', `lunch_${kind}`, null],
     ['16:30', `snack_${kind}`, null],
+    ['16:30', 'shake', 'Protein kokteyli: whey 30 q + su'],
     ['20:00', `dinner_${kind}`, null],
   ];
   const done = new Set(d.meals.map(m => m.preset));
@@ -104,7 +105,7 @@ function menuCard(st, d) {
         <span class="check">${on ? icon.check : ''}</span><span class="menu-time">${time}</span>
         <span class="grow">${esc(text || p.name.replace(/^[^:]*:\s*/, ''))}</span><span class="muted small">${p.kcal}</span></button>`;
     }).join('')}
-    <p class="muted tiny">Cəmi ≈ ${rows.reduce((a, [, id]) => a + ((st.presets.find(x => x.id === id) || {}).kcal || 0), 0)} kkal · kreatin naharnan.</p>
+    <p class="muted tiny">Cəmi ≈ ${rows.reduce((a, [, id]) => a + ((st.presets.find(x => x.id === id) || {}).kcal || 0), 0)} kkal · kreatin + vitaminlər naharnan.</p>
   </article>`;
 }
 

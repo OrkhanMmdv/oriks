@@ -59,7 +59,7 @@ const custom = await api('meal_add', { date: today, name: 'Balıx və kartof', k
 await api('water', { date: today, delta: 2000 });
 await api('supp', { date: today, id: 'creatine', on: true });
 st = await api('state');
-assert.equal(st.score.kcal, 1770); assert.equal(st.score.protein, 179);
+assert.equal(st.score.kcal, 1650); assert.equal(st.score.protein, 155);
 assert.equal(st.score.kcalTarget, 1900); assert.equal(st.score.trainDay, true); ok('Monday is a gym day: 1,900 kcal target');
 assert.equal((await api('day', { date: '2026-10-27' })).kcalTarget, 1800); ok('Tuesday is a rest day: 1,800 kcal target');
 assert.equal(st.settings.goalWeight, 94); assert.equal(st.settings.blockGoal, 98); assert.equal(st.settings.goalRate, 1.4); assert.equal(st.settings.startWeight, 109); assert.equal(st.cycle.weeks, 8); ok('goals: 109 → 98 kg in 8 weeks (−1.4 kg/week), 94 kg long-term'); assert.equal(st.score.parts.supp, 10); assert.equal(st.score.parts.sweets, 10);
@@ -115,13 +115,19 @@ assert.deepEqual(r.sent, ['morning']); ok('06:50 morning reminder (10 min before
 assert.ok(lastMsg().payload.reply_markup.inline_keyboard[0].some(b => b.callback_data === 'water:500')); ok('morning reminder has a water button');
 r = await cron(); assert.deepEqual(r.sent, []); ok('not sent twice');
 clock.ms = Date.parse('2026-11-03T10:21:00Z'); // 12:21 — Tuesday, a rest day
-r = await cron(); assert.deepEqual(r.sent, ['lunch']); ok('12:20 lunch + creatine reminder');
-const lunchKb = lastMsg().payload.reply_markup.inline_keyboard.flat().map(b => b.callback_data);
+r = await cron(); assert.deepEqual(r.sent.sort(), ['lunch', 'vitamins']); ok('12:20 lunch + creatine, and a separate vitamins reminder');
+const vitKb = lastMsg().payload.reply_markup.inline_keyboard.flat().map(b => b.callback_data);
+const lunchMsg = [...calls].reverse().filter(c => c.method === 'sendMessage')[1];
+const lunchKb = lunchMsg.payload.reply_markup.inline_keyboard.flat().map(b => b.callback_data).concat(vitKb);
+assert.ok(['supp:vitd', 'supp:omega3', 'supp:multi'].every(x => vitKb.includes(x)) || ['supp:vitd', 'supp:omega3', 'supp:multi'].every(x => lunchKb.includes(x))); ok('vitamins reminder has D3, Omega-3, Multi buttons');
 assert.ok(lunchKb.includes('meal:lunch_rest') && lunchKb.includes('supp:creatine')); ok('lunch reminder: rest-day lunch + creatine buttons');
 await cb('supp:creatine');
 clock.ms = Date.parse('2026-11-03T13:02:00Z'); // 15:02
 r = await cron(); assert.deepEqual(r.sent, ['water']); ok('15:00 water check (under half)');
-clock.ms = Date.parse('2026-11-03T17:44:00Z'); // 19:44 — omega reminder not yet
+clock.ms = Date.parse('2026-11-03T14:21:00Z'); // 16:21
+r = await cron(); assert.deepEqual(r.sent.sort(), ['shake', 'snack']); ok('16:20 snack + protein shake reminders');
+assert.ok(calls.filter(c => c.method === 'sendMessage').slice(-2).some(c => JSON.stringify(c.payload.reply_markup || {}).includes('meal:shake'))); ok('shake reminder logs whey with one tap');
+clock.ms = Date.parse('2026-11-03T17:44:00Z'); // 19:44 — dinner reminder not yet
 r = await cron(); assert.deepEqual(r.sent, []); ok('nothing before its time');
 clock.ms = Date.parse('2026-11-03T19:50:00Z'); // 21:50
 r = await cron(); assert.deepEqual(r.sent, ['checkin']); ok('21:30 evening check-in');
