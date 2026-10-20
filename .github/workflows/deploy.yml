@@ -7,7 +7,12 @@ name: Deploy
 on:
   push:
     branches: [main]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      reset_owner:
+        description: "Free the bot so the next /start claims it again"
+        type: boolean
+        default: false
 
 concurrency: deploy
 
@@ -47,5 +52,12 @@ jobs:
         run: |
           sleep 5
           curl -fsS -X POST "https://$PROJECT_REF.supabase.co/functions/v1/pehlevan/setup" \
+            -H "x-setup-token: ${{ secrets.BOT_TOKEN }}"
+          echo
+
+      - name: Reset the bot owner (only when asked)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reset_owner }}
+        run: |
+          curl -fsS -X POST "https://$PROJECT_REF.supabase.co/functions/v1/pehlevan/reset-owner" \
             -H "x-setup-token: ${{ secrets.BOT_TOKEN }}"
           echo

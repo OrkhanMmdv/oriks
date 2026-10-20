@@ -155,4 +155,10 @@ assert.equal(setup.report.webhook, true); assert.equal(setup.report.menu, true);
 assert.equal(calls.find(c => c.method === 'setWebhook').payload.secret_token, webhookSecret); ok('webhook registered with the secret token');
 assert.equal((await app.handle(new Request(BASE + '/setup', { method: 'POST', headers: { 'x-setup-token': 'nope' } }))).status, 401); ok('setup needs the token');
 
+assert.equal((await app.handle(new Request(BASE + '/reset-owner', { method: 'POST', headers: { 'x-setup-token': 'nope' } }))).status, 401); ok('owner reset needs the token');
+const reset = await app.handle(new Request(BASE + '/reset-owner', { method: 'POST', headers: { 'x-setup-token': FAKE_TOKEN } })).then(x => x.json());
+assert.equal(reset.previousOwner.first_name, 'Orxan'); ok('owner reset reports who had the bot');
+await msg('/start', stranger);
+assert.match(lastMsg().payload.text, /Xoş gəldin/); assert.equal((await api('state', {}, stranger)).ok, true); ok('after a reset the next /start claims the bot');
+
 console.log(`\nAll ${passed} checks passed.`);

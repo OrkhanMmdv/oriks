@@ -1022,6 +1022,13 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
         if (req.headers.get('x-setup-token') !== token) return json({ ok: false }, 401);
         return json({ ok: true, report: await setup() });
       }
+      if (route === '/reset-owner' && req.method === 'POST') {
+        // Frees the bot so the next /start claims it again. Needs the bot token (only GitHub Actions has it).
+        if (req.headers.get('x-setup-token') !== token) return json({ ok: false }, 401);
+        const prev = await ownerInfo();
+        await db.q(`delete from app.kv where key = 'owner'`);
+        return json({ ok: true, previousOwner: prev ? { first_name: prev.first_name || '?', id_ends_with: String(prev.id).slice(-3) } : null });
+      }
       if (route === '/photo' && req.method === 'GET') {
         const auth = await authOwner(url.searchParams.get('init') || '');
         if (auth.error) return auth.error;
