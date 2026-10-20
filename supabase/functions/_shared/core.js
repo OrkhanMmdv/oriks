@@ -1042,7 +1042,14 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
         const body = await req.json().catch(() => ({}));
         return json({ ok: true, ...(await fn(body)) });
       }
-      if (route === '/' || route === '/health') return json({ ok: true, app: 'pehlevan' });
+      if (route === '/' || route === '/health') {
+        // Safe status only: is the bot claimed, and does Telegram reach the webhook? (no ids, no secrets)
+        const wh = await tg('getWebhookInfo', {});
+        return json({
+          ok: true, app: 'pehlevan', ownerSet: !!(await ownerInfo()),
+          webhook: wh.ok ? { set: !!wh.result.url, pending: wh.result.pending_update_count, lastError: wh.result.last_error_message || null } : null,
+        });
+      }
       return json({ ok: false, error: 'not found' }, 404);
     } catch (e) {
       console.error(e);

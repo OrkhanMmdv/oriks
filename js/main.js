@@ -100,7 +100,7 @@ async function boot() {
     await app.refresh(false);
     app.render();
   } catch (e) {
-    if (e instanceof ApiError && e.status === 403) S.fatal = ['Bu bot şəxsidi', /start/.test(e.message) ? 'Əvvəlcə botda /start yaz, sonra proqramı yenidən aç.' : 'Bu proqram ancax sahibi üçündü.'];
+    if (e instanceof ApiError && e.status === 403) S.fatal = /start/.test(e.message) ? ['Əvvəlcə /start yaz', 'Botun çatına qayıt, /start göndər, sonra proqramı bağla və yenidən aç.'] : ['Bu bot şəxsidi', 'Bu proqram ancax sahibi üçündü. Sahibi başqa Telegram hesabıdı.'];
     else if (e instanceof ApiError && e.status === 401) S.fatal = ['Giriş vaxtı keçif', 'Proqramı bağla və botdan yenidən aç.'];
     else S.fatal = ['Bağlantı yoxdu', e.message || 'Bir az sonra yenə yoxla, qağa.'];
     app.render();
