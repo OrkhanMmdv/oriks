@@ -306,6 +306,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--gold); }
 .xp-list b { color: var(--gold-text); }
 
 /* ---------- more ---------- */
+.home-card { border-color: var(--gold); background: linear-gradient(160deg, rgba(227, 174, 69, .14), transparent 60%), var(--card); }
 .fold { padding: 0; }
 .fold-head { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 0 16px; font-weight: 700; text-align: left; }
 .fold-head .ic:first-child { color: var(--red-hi); }

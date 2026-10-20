@@ -1,10 +1,26 @@
 // "Qalanı" — review with Claude, motivations, reminders, settings, work days, study, lock.
 import { S, app, run } from '../store.js';
 import { call } from '../api.js';
-import { esc, icon, haptic, toast, ask, addDays, MONTHS, WD } from '../ui.js';
+import { esc, icon, haptic, toast, ask, addDays, MONTHS, WD, tg, flame } from '../ui.js';
 import { header } from './today.js';
 
-const M = S.more = { review: null, days: 7, motiv: null, rem: null, work: null, study: null, workMonth: null, studyDate: null };
+const M = S.more = { review: null, days: 7, motiv: null, rem: null, work: null, study: null, workMonth: null, studyDate: null, home: null };
+
+// Telegram (Bot API 8.0+) can put the mini app on the phone's home screen as its own icon.
+const canHome = () => !!(tg && tg.isVersionAtLeast && tg.isVersionAtLeast('8.0') && tg.addToHomeScreen);
+function homeCard() {
+  if (M.home === 'added') return '';
+  return `<article class="card home-card">
+    <div class="row gap center-y">${flame('lg lit gold')}<div class="grow"><h3>Telefonun ekranına əlavə elə</h3>
+    <p class="muted small">Pəhləvan ikonu ekranda olajax — bir toxunuşla açılajax, bota girmədən.</p></div></div>
+    <button class="btn fire full" data-a="addHome">${icon.plus} Ekrana əlavə elə</button>
+    ${canHome() ? '' : '<p class="muted tiny">Bunun üçün Telegramı son versiyaya yenilə.</p>'}
+  </article>`;
+}
+if (canHome()) {
+  try { tg.checkHomeScreenStatus(st => { M.home = st; if (st === 'added' && S.screen === 'more') app.render(); }); } catch { /* old client */ }
+  tg.onEvent('homeScreenAdded', () => { M.home = 'added'; toast('Əlavə olundu — ikon telefonun ekranındadı!'); haptic('ok'); app.render(); });
+}
 
 const section = (id, title, ic, body) => `<article class="card fold ${S.open[id] ? 'open' : ''}">
   <button class="fold-head" data-a="fold" data-v="${id}" aria-expanded="${!!S.open[id]}">${ic}<span class="grow">${title}</span>${S.open[id] ? icon.minus : icon.plus}</button>
@@ -13,6 +29,7 @@ const section = (id, title, ic, body) => `<article class="card fold ${S.open[id]
 export function render() {
   const st = S.st, s = st.settings;
   return `${header(st, 'Qalanı')}
+  ${homeCard()}
   ${section('review', 'Claude ilə baxış', icon.copy, () => `
     <p class="small muted">Son günlərin xülasəsi — kopyala, Claude layihənə yapışdır, planı birlikdə düzəldərik.</p>
     <div class="seg"><button class="${M.days === 7 ? 'act' : ''}" data-a="reviewDays" data-v="7">7 gün</button><button class="${M.days === 14 ? 'act' : ''}" data-a="reviewDays" data-v="14">14 gün</button></div>
@@ -156,6 +173,11 @@ export const actions = {
     await run(async () => { await call('study_note', { date: M.studyDate || S.st.today, extra: M.study.extra || 0, note: document.getElementById('st-note').value }); toast('Saxlandı'); await loadSection('study'); app.render(); });
   },
   lock() { S.unlocked = false; S.pin = ''; app.render(); },
+  addHome() {
+    haptic();
+    if (!canHome()) return toast('Telegramı yenilə (App Store / Play Market), sonra yenə yoxla');
+    try { tg.addToHomeScreen(); } catch { toast('Bu telefonda alınmadı'); }
+  },
 };
 
 export const changes = {
