@@ -59,9 +59,13 @@ export function render() {
       <label class="lbl">Dövrün başlanğıcı (həftə 1, bazar ertəsi)<input id="s-start" type="date" value="${esc(s.cycleStart)}"></label>
       <label class="lbl">Musiqi linki (Spotify / YouTube Music)<input id="s-pl" type="url" value="${esc(s.playlist)}"></label>
       <div class="row gap tight">
-        <label class="lbl grow">Kalori<input id="s-kcal" type="number" inputmode="numeric" value="${s.kcal}"></label>
+        <label class="lbl grow">Zal günü kkal<input id="s-kcalT" type="number" inputmode="numeric" value="${s.kcalTrain}"></label>
+        <label class="lbl grow">İstirahət kkal<input id="s-kcalR" type="number" inputmode="numeric" value="${s.kcalRest}"></label>
+      </div>
+      <div class="row gap tight">
         <label class="lbl grow">Zülal (q)<input id="s-prot" type="number" inputmode="numeric" value="${s.protein}"></label>
         <label class="lbl grow">Su (ml)<input id="s-water" type="number" inputmode="numeric" value="${s.water}"></label>
+        <label class="lbl grow">Hədəf çəki<input id="s-goal" type="number" inputmode="decimal" value="${s.goalWeight}"></label>
       </div>
       <button class="btn fire full" data-a="saveSettings">Yadda saxla</button>
     </div>`)}
@@ -145,7 +149,7 @@ export const actions = {
       name: document.getElementById('s-name').value.trim() || 'Orxan',
       cycleStart: document.getElementById('s-start').value,
       playlist: document.getElementById('s-pl').value.trim(),
-      kcal: +document.getElementById('s-kcal').value, protein: +document.getElementById('s-prot').value, water: +document.getElementById('s-water').value,
+      kcalTrain: +document.getElementById('s-kcalT').value, kcalRest: +document.getElementById('s-kcalR').value, goalWeight: +document.getElementById('s-goal').value, protein: +document.getElementById('s-prot').value, water: +document.getElementById('s-water').value,
     };
     await run(async () => { await call('settings_save', body); haptic('ok'); toast('Yadda qaldı'); await app.refresh(); });
   },

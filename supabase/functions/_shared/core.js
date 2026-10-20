@@ -17,23 +17,28 @@ export const TZ = 'Europe/Riga';
 export const DEFAULT_SETTINGS = {
   name: 'Orxan',
   cycleStart: '2026-10-26',
+  cycleWeeks: 8,          // 8-week block, then review and plan the next one
   playlist: 'https://open.spotify.com/playlist/24ODYm1iVHYYADUlLLJwE6?si=64e6166cbd9d4a34',
-  kcal: 2000,
+  trainDays: [1, 3, 5],   // Mon / Wed / Fri, gym 18:00–19:00
+  kcalTrain: 1900,        // gym days
+  kcalRest: 1800,         // rest days
+  kcal: 1800,             // legacy single target (kept for older screens)
   protein: 180,
   water: 3500,            // ml per day
   waterTrainBonus: 500,   // extra ml on training days
-  goalWeight: 90,
-  goalRate: 1.3,          // kg lost per week
+  startWeight: 109,
+  goalWeight: 94,         // long-term goal; the 8-week block aims for ~100 kg
+  goalRate: 1.0,          // kg lost per week (0.5–1.3 is fine)
   keySupp: 'creatine',
   benchGoal: 105,         // estimated 1RM for the "Bench goal" badge
   squatGoal: 100,
   oldBest: { bench: 100, squat: 40 },
   supps: [
-    { id: 'creatine', name: 'Kreatin 5 q', when: 'Səhər yeməyiynən' },
-    { id: 'vitd', name: 'D3 vitamini 2000 IU', when: 'Səhər yeməyiynən' },
-    { id: 'multi', name: 'Multivitamin', when: 'Səhər yeməyiynən' },
-    { id: 'omega3', name: 'Omeqa-3', when: 'Axşam yeməyiynən' },
-    { id: 'magnesium', name: 'Maqnezium', when: 'Yatmazdan 30 dəq qabax' },
+    { id: 'creatine', name: 'Kreatin 5 q', when: '12:30 nahar ilə' },
+    { id: 'vitd', name: 'D3 vitamini', when: '12:30 nahar ilə' },
+    { id: 'omega3', name: 'Omeqa-3', when: '12:30 nahar ilə' },
+    { id: 'multi', name: 'Multivitamin', when: '12:30 nahar ilə' },
+    { id: 'magnesium', name: 'Maqnezium', when: 'Yatmazdan qabax' },
   ],
   studyPlan: [
     { id: 'db', name: 'Verilənlər bazası kursu', minutes: 45 },
@@ -43,15 +48,18 @@ export const DEFAULT_SETTINGS = {
   studyGoal: 90,
 };
 
+// Meal plan presets (cooked weights). Gym day ≈ 1,880 kcal / 191 g protein, rest day ≈ 1,800 kcal / 189 g.
 export const DEFAULT_PRESETS = [
-  { id: 'breakfast', name: 'Yeməkxana səhər yeməyi', kcal: 450, protein: 30 },
-  { id: 'lunch', name: 'Yeməkxana naharı', kcal: 600, protein: 45 },
-  { id: 'canteen_dinner', name: 'Yeməkxana şamı', kcal: 650, protein: 40 },
-  { id: 'home_dinner', name: 'Evdə şam (balıx)', kcal: 500, protein: 45 },
-  { id: 'cottage', name: 'Kəsmik 250 q', kcal: 250, protein: 40 },
-  { id: 'kefir', name: 'Kefir 500 ml', kcal: 200, protein: 15 },
-  { id: 'shake', name: 'Protein kokteyli', kcal: 130, protein: 25 },
-  { id: 'tuna', name: 'Tuna konservi', kcal: 120, protein: 26 },
+  { id: 'lunch_train', name: 'Nahar (məşq günü): toyux 220 q, düyü 250 q, tərəvəz, yağ 10 q', kcal: 865, protein: 80 },
+  { id: 'lunch_rest', name: 'Nahar (istirahət): toyux 220 q, düyü 220 q, tərəvəz, yağ 10 q', kcal: 840, protein: 80 },
+  { id: 'snack_train', name: 'Ara: skyr 250 q + banan + whey 30 q', kcal: 385, protein: 53 },
+  { id: 'snack_rest', name: 'Ara: skyr 250 q + alma + whey 30 q', kcal: 355, protein: 52 },
+  { id: 'dinner_train', name: 'Şam: kəsmik 300 q, giləmeyvə, qoz 15 q, çörək 50 q', kcal: 630, protein: 58 },
+  { id: 'dinner_rest', name: 'Şam (istirahət): kəsmik 300 q, giləmeyvə, qoz 15 q, çörək 40 q', kcal: 605, protein: 57 },
+  { id: 'coffee', name: 'Qara kofe / şəkərsiz çay', kcal: 5, protein: 0 },
+  { id: 'egg', name: 'Qaynadılmış yumurta', kcal: 78, protein: 6 },
+  { id: 'shake', name: 'Whey 30 q (su ilə)', kcal: 120, protein: 24 },
+  { id: 'cottage', name: 'Kəsmik 300 q (5%)', kcal: 365, protein: 51 },
   { id: 'dessert', name: 'Şirniyyat', kcal: 250, protein: 4 },
   { id: 'fastfood', name: 'Fast food', kcal: 900, protein: 35 },
 ];
@@ -74,24 +82,24 @@ export const STARTER_MOTIVATIONS = [
   'Gəncəli söz verəndə tutar. Özünə verdiyin sözü tut.',
 ];
 
+// Every reminder fires 10 minutes BEFORE the thing it's about (Europe/Riga time).
 const DEFAULT_REMINDERS = [
-  { label: 'Səhər + kreatin', kind: 'morning', time: '07:15', supplements: ['creatine', 'vitd', 'multi'] },
+  { label: 'Səhər: su + kofe (07:00) · B.e/Ç/C çəki', kind: 'morning', time: '06:50' },
+  { label: 'Nahar + kreatin (12:30)', kind: 'lunch', time: '12:20', supplements: ['creatine', 'vitd', 'omega3', 'multi'] },
   { label: 'Su yoxlaması', kind: 'water', time: '15:00' },
-  { label: 'Növbəti məşq', kind: 'workout', time: '17:15' },
-  { label: 'Omeqa-3', kind: 'supp', time: '19:45', supplements: ['omega3'] },
-  { label: 'Yatmazdan zülal', kind: 'protein', time: '21:30' },
-  { label: 'Axşam yoxlaması', kind: 'checkin', time: '21:45' },
-  { label: 'Maqnezium', kind: 'supp', time: '23:30', supplements: ['magnesium'] },
-  { label: 'Həftəlik çəki', kind: 'weighin', time: '07:00', weekdays: [1] },
-  { label: 'Çəki — axşam xatırlatması', kind: 'weighin', time: '20:00', weekdays: [1] },
-  { label: 'Proqres şəkilləri', kind: 'photos', time: '10:00', weekdays: [7] },
+  { label: 'Ara yeməyi: skyr + whey (16:30)', kind: 'snack', time: '16:20' },
+  { label: 'Zal (18:00)', kind: 'workout', time: '17:50', weekdays: [1, 3, 5] },
+  { label: 'Şam: kəsmik (20:00)', kind: 'dinner', time: '19:50' },
+  { label: 'Axşam yoxlaması', kind: 'checkin', time: '21:30' },
+  { label: 'Yuxu (22:30) + maqnezium', kind: 'bed', time: '22:20', supplements: ['magnesium'] },
+  { label: 'Şəkil + bel ölçüsü (2 həftədən bir)', kind: 'photos', time: '10:00', weekdays: [7] },
 ];
 
 // The evening check-in buttons (preset ids, or special actions).
 const CHECKIN_BUTTONS = [
-  ['meal:canteen_dinner', 'Yeməkxana şamı'], ['meal:home_dinner', 'Evdə şam'],
+  ['meal:dinner_train', 'Şam yedim (kəsmik)'], ['meal:snack_train', 'Ara yeməyi yedim'],
+  ['meal:shake', 'Whey içdim'], ['meal:egg', 'Yumurta'],
   ['meal:fastfood', 'Fast food'], ['meal:dessert', 'Şirniyyat'],
-  ['meal:shake', 'Kokteyl'], ['meal:cottage', 'Kəsmik'],
   ['water:500', '+500 ml su'], ['supp:creatine', 'Kreatin içdim'],
 ];
 
@@ -114,15 +122,15 @@ export const BADGES = [
   { id: 'early_bird', name: 'Sübh quşu', desc: '08:00-dan qabax 5 məşq' },
   { id: 'bench_goal', name: 'Bençpres hədəfi', desc: 'Bençpres maksimumu hədəfə çatsın' },
   { id: 'squat_goal', name: 'Squat hədəfi', desc: 'Squat maksimumu hədəfə çatsın' },
-  { id: 'finisher', name: 'Tonqal tamamdı', desc: '12 həftənin 48 alovu yansın' },
+  { id: 'finisher', name: 'Tonqal tamamdı', desc: 'Dövrün bütün alovları yansın' },
 ];
 
+// 8-week block (from the plan): technique → build → build → hold. No deload needed in 8 weeks on a cut.
 export const PHASES = [
   { id: 'reentry', name: 'Qayıdış', weeks: [1, 2] },
-  { id: 'build1', name: 'Güc yığırıx', weeks: [3, 4, 5, 6] },
-  { id: 'deload', name: 'Nəfəs dərmə', weeks: [7] },
-  { id: 'build2', name: 'Güc yığırıx II', weeks: [8, 9, 10, 11] },
-  { id: 'test', name: 'Sınax + dincəlmə', weeks: [12] },
+  { id: 'build1', name: 'Güc yığırıx', weeks: [3, 4] },
+  { id: 'build2', name: 'Güc yığırıx II', weeks: [5, 6] },
+  { id: 'keep', name: 'Saxla + bərkit', weeks: [7, 8] },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -212,6 +220,7 @@ create table if not exists app.badges (id text primary key, unlocked_at double p
 create table if not exists app.workdays (date text primary key);
 create table if not exists app.study (date text not null, task text not null, minutes int not null, primary key (date, task));
 create table if not exists app.study_notes (date text primary key, extra int default 0, note text default '');
+create table if not exists app.waist (date text primary key, cm double precision not null);
 `;
 
 // Each migration runs once; its id is remembered in kv('migrations').
@@ -243,6 +252,21 @@ const MIGRATIONS = [
       `insert into app.study_notes (date, extra, note) select day::text, extra_min, note from public.study_days on conflict do nothing`,
     ];
     for (const s of steps) { try { await db.q(s); } catch { /* table missing: nothing to import */ } }
+  }],
+  ['005_plan_v2', async db => {
+    // New 8-week plan: 1,900/1,800 kcal, start 109 kg → 94 kg, reminders 10 min before each action,
+    // new meal presets, waist measurements. Keeps the user's cycle start, name, playlist and study plan.
+    await db.exec('create table if not exists app.waist (date text primary key, cm double precision not null);');
+    const cur = asJson((await db.q(`select value from app.kv where key = 'settings'`))[0]?.value) || {};
+    const plan = ['cycleWeeks', 'trainDays', 'kcalTrain', 'kcalRest', 'kcal', 'protein', 'startWeight', 'goalWeight', 'goalRate', 'supps'];
+    for (const k of plan) cur[k] = DEFAULT_SETTINGS[k];
+    await db.q(`insert into app.kv (key, value) values ('settings', $1::text::jsonb) on conflict (key) do update set value = excluded.value`, [JSON.stringify(cur)]);
+    await db.q(`delete from app.kv where key = 'presets'`);
+    await db.q('delete from app.reminders');
+    for (const r of DEFAULT_REMINDERS) {
+      await db.q('insert into app.reminders (label, kind, time, supplements, weekdays) values ($1,$2,$3,$4::text::jsonb,$5::text::jsonb)',
+        [r.label, r.kind, r.time, JSON.stringify(r.supplements || []), JSON.stringify(r.weekdays || [1, 2, 3, 4, 5, 6, 7])]);
+    }
   }],
 ];
 
@@ -344,6 +368,9 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     for (const x of all.supps) day(x.date).supps.add(x.supplement);
 
     const waterTarget = d => s.water + (trainedOn.has(d) ? s.waterTrainBonus : 0);
+    // Gym day = a planned training weekday or any day a workout was finished.
+    const isTrainDay = d => trainedOn.has(d) || (s.trainDays || []).includes(isoWeekday(d));
+    const kcalTarget = d => (isTrainDay(d) ? s.kcalTrain : s.kcalRest) || s.kcal;
     const lastTrainedOnOrBefore = d => { let r = null; for (const t of trainedDates) { if (t <= d) r = t; else break; } return r; };
 
     function score(d) {
@@ -351,7 +378,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
       const parts = { protein: 0, kcal: 0, water: 0, supp: 0, training: 0, sweets: 0 };
       if (!x.meals.length) return { total: 0, parts, noMeals: true };
       parts.protein = 25 * Math.min(1, x.protein / s.protein);
-      const lo = s.kcal * 0.9, hi = s.kcal * 1.1;
+      const lo = kcalTarget(d) * 0.9, hi = kcalTarget(d) * 1.1;
       parts.kcal = x.kcal < lo ? 20 * x.kcal / lo : x.kcal <= hi ? 20 : Math.max(0, 20 - (x.kcal - hi) / 50);
       parts.water = 20 * Math.min(1, x.water / waterTarget(d));
       parts.supp = x.supps.has(s.keySupp) ? 10 : 0;
@@ -409,10 +436,11 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     if (streaks.supp > 0 && !tookKey(todayDate)) atRisk.push({ kind: 'supp', text: 'Kreatini içməsən seriya sönəjəx, qağa.' });
     if (streaks.logging > 0 && !logged(todayDate)) atRisk.push({ kind: 'logging', text: `Yazı seriyası üçün hələ ${2 - t.meals.length} yemək yaz.` });
 
-    // 12-week tracker: 12 rows × 4 cells; a cell fills per finished workout.
+    // Cycle tracker: one row per week × 4 cells; a cell fills per finished workout.
+    const weeks = s.cycleWeeks || 8;
     const tracker = [];
     let filled = 0;
-    for (let w = 0; w < 12; w++) {
+    for (let w = 0; w < weeks; w++) {
       const start = addDays(s.cycleStart, w * 7), end = addDays(start, 7);
       const ws = finished.map(x => local(x.finished_at).date).filter(d => d >= start && d < end).sort().slice(0, 4);
       const cells = [0, 1, 2, 3].map(i => ws[i] ? { date: ws[i], gold: (scores[ws[i]]?.total || 0) >= 80 } : null);
@@ -428,12 +456,13 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     const prog = {
       first_rep: [finished.length, 1], week_one: [maxWeek, 3], new_best: [newBests, 1], on_scale: [all.weights.length, 1],
       hydrated: [maxRun(waterOk), 7], creatine30: [maxRun(tookKey), 30], clean_week: [cleanRun, 7], full_row: [maxWeek, 4],
-      early_bird: [earlyBirds, 5], bench_goal: [round1(benchMax), s.benchGoal], squat_goal: [round1(squatMax), s.squatGoal], finisher: [filled, 48],
+      early_bird: [earlyBirds, 5], bench_goal: [round1(benchMax), s.benchGoal], squat_goal: [round1(squatMax), s.squatGoal], finisher: [filled, weeks * 4],
     };
     const unlockedAt = Object.fromEntries(all.badges.map(b => [b.id, b.unlocked_at]));
     const badges = BADGES.map(b => {
       const [v, target] = prog[b.id];
-      return { ...b, value: v, target, progress: Math.min(1, v / target), earned: v >= target, unlockedAt: unlockedAt[b.id] || null };
+      const desc = b.id === 'finisher' ? `${weeks} həftənin ${weeks * 4} alovu yansın` : b.desc;
+      return { ...b, desc, value: v, target, progress: Math.min(1, v / target), earned: v >= target, unlockedAt: unlockedAt[b.id] || null };
     });
 
     // XP and level.
@@ -448,7 +477,8 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     const rank = [...RANKS].reverse().find(r => level >= r.from);
 
     return {
-      scores, today: { ...scores[todayDate] || score(todayDate), kcal: t.kcal, protein: t.protein, water: t.water, waterTarget: waterTarget(todayDate), meals: t.meals.length, supps: [...t.supps] },
+      scores, today: { ...scores[todayDate] || score(todayDate), kcal: t.kcal, protein: t.protein, water: t.water, waterTarget: waterTarget(todayDate), kcalTarget: kcalTarget(todayDate), trainDay: isTrainDay(todayDate), meals: t.meals.length, supps: [...t.supps] },
+      kcalTarget, isTrainDay,
       streaks, atRisk, tracker, badges, best: bestSet, bestE1rm: best, newBests,
       xp, xpParts, level, levelXp: rem, levelNeed: 200 + 100 * level, rank, weekCount, trainedOn,
     };
@@ -509,9 +539,10 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
 
   function cycleWeek(s, todayDate) {
     const d = daysBetween(s.cycleStart, todayDate);
-    const week = d < 0 ? 0 : Math.min(12, Math.floor(d / 7) + 1);
-    const phase = PHASES.find(p => p.weeks.includes(Math.max(1, week))) || PHASES[0];
-    return { week, phase, startsIn: d < 0 ? -d : 0 };
+    const weeks = s.cycleWeeks || 8;
+    const week = d < 0 ? 0 : Math.min(weeks, Math.floor(d / 7) + 1);
+    const phase = PHASES.find(p => p.weeks.includes(Math.max(1, week))) || PHASES[PHASES.length - 1];
+    return { week, weeks, phase, startsIn: d < 0 ? -d : 0, done: d >= weeks * 7 };
   }
 
   const motivationOfDay = async date => {
@@ -528,7 +559,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     const ready = ns.ready ? 'hazırdı' : `${local(ns.readyAt).hm}-dan hazır olajax`;
     return [
       `<b>Bu gün, ${s.name} qağa</b>`,
-      `Kalori: ${t.kcal} / ${s.kcal} kkal`,
+      `Kalori: ${t.kcal} / ${t.kcalTarget} kkal (${t.trainDay ? 'məşq günü' : 'istirahət günü'})`,
       `Zülal: ${t.protein} / ${s.protein} q`,
       `Su: ${fmtL(t.water)} / ${fmtL(t.waterTarget)} L`,
       `Xal: ${t.total}/100`,
@@ -600,10 +631,49 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     const t = g.today;
     const suppButtons = ids => ({ inline_keyboard: [ids.map(id => ({ text: '✅ ' + ((s.supps.find(x => x.id === id) || {}).name || id), callback_data: 'supp:' + id }))] });
     const ns = await nextSession(all, nowMs);
+    const train = t.trainDay;
+    const todaysMeals = all.meals.filter(m => m.date === todayDate);
+    const logged = prefix => todaysMeals.some(m => m.preset && m.preset.startsWith(prefix));
+    const mealButton = (prefix, text) => ({ text, callback_data: `meal:${prefix}_${train ? 'train' : 'rest'}` });
+    const preset = async prefix => (await presets()).find(p => p.id === `${prefix}_${train ? 'train' : 'rest'}`);
     switch (r.kind) {
       case 'morning': {
+        // 10 min before 07:00: water + coffee; weigh-in on gym days (Mon/Wed/Fri) — plan: ≥3 times a week.
+        const weighDay = (s.trainDays || []).includes(isoWeekday(todayDate));
+        const weighed = all.weights.some(w => w.date === todayDate);
+        const lines = [`<b>Sabahın xeyir, ${s.name} qağa!</b>`, '', await motivationOfDay(todayDate), '',
+          '07:00 — 300–500 ml su + qara kofe / çay. Səhər yeməyi istəsən: 1 yumurta.'];
+        if (weighDay && !weighed) lines.push('Bu gün çəki günüdü: tualetdən sonra, yeməkdən qabax tərəziyə çıx, rəqəmi bura yaz (məs. <b>108.4</b>).');
+        lines.push(train ? `Bu gün zal günüdü: <b>${ns.name}</b>, 18:00. Hədəf ${t.kcalTarget} kkal.` : `Bu gün istirahətdi — hədəf ${t.kcalTarget} kkal, 8 000 addım.`);
+        return { text: lines.join('\n'), markup: { inline_keyboard: [[{ text: '+500 ml su', callback_data: 'water:500' }, { text: 'Kofe içdim', callback_data: 'meal:coffee' }]] } };
+      }
+      case 'lunch': {
+        // 10 min before 12:30: lunch + creatine (and the other lunch supplements).
+        const p = await preset('lunch');
         const left = (r.supplements || []).filter(id => !t.supps.includes(id));
-        return { text: `<b>Sabahın xeyir, ${s.name} qağa!</b>\n\n${await motivationOfDay(todayDate)}\n\nNövbəti məşq: <b>${ns.name}</b>${ns.ready ? ' — bu axşam hazırdı' : ''}\nKreatini unutma.`, markup: left.length ? suppButtons(left) : openAppButton() };
+        if (logged('lunch') && !left.length && !force) return null;
+        const rows = [];
+        if (!logged('lunch')) rows.push([mealButton('lunch', `Nahar yedim (${p ? p.kcal : ''} kkal)`)]);
+        for (let i = 0; i < left.length; i += 2) rows.push(left.slice(i, i + 2).map(id => ({ text: '✅ ' + ((s.supps.find(x => x.id === id) || {}).name || id), callback_data: 'supp:' + id })));
+        return { text: `10 dəqiqəyə nahar, qağa (12:30):\n<b>${p ? p.name.replace(/^Nahar[^:]*:\s*/, '') : 'toyux + düyü + tərəvəz'}</b>\nKreatin 5 q-nı da naharnan iç.`, markup: { inline_keyboard: rows } };
+      }
+      case 'snack': {
+        // 10 min before 16:30: skyr + fruit + whey (pre-workout on gym days).
+        if (logged('snack') && !force) return null;
+        const p = await preset('snack');
+        return { text: `10 dəqiqəyə ara yeməyi (16:30):\n<b>${p ? p.name.replace(/^Ara:\s*/, '') : 'skyr + meyvə + whey'}</b>${train ? '\nMəşqdən qabax enerji — zala 1.5 saat qalıf.' : ''}`, markup: { inline_keyboard: [[mealButton('snack', 'Yedim ✅')]] } };
+      }
+      case 'dinner': {
+        // 10 min before 20:00: cottage cheese dinner.
+        if (logged('dinner') && !force) return null;
+        const p = await preset('dinner');
+        const protLeft = Math.max(0, s.protein - t.protein);
+        return { text: `10 dəqiqəyə şam (20:00):\n<b>${p ? p.name.replace(/^Şam[^:]*:\s*/, '') : 'kəsmik + giləmeyvə + çörək'}</b>\nHələ ${protLeft} q zülal, ${Math.max(0, t.kcalTarget - t.kcal)} kkal qalıf.`, markup: { inline_keyboard: [[mealButton('dinner', 'Şam yedim ✅')]] } };
+      }
+      case 'bed': {
+        // 10 min before 22:30: sleep 7–9 h is the best hunger control; magnesium if you use it.
+        const left = (r.supplements || []).filter(id => !t.supps.includes(id));
+        return { text: '10 dəqiqəyə yatmax vaxtıdı (22:30), qağa. Telefonu kənara qoy — 7–9 saat yuxu gecə acılığını da azaldır.', markup: left.length ? { inline_keyboard: [left.map(id => ({ text: '✅ ' + ((s.supps.find(x => x.id === id) || {}).name || id), callback_data: 'supp:' + id }))] } : undefined };
       }
       case 'supp': {
         const left = (r.supplements || []).filter(id => !t.supps.includes(id));
@@ -619,7 +689,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
         // Only if the next session is ready by tonight (21:00) — and not on a day already trained.
         const readyTonight = ns.ready || (ns.readyAt && local(ns.readyAt).date === todayDate && local(ns.readyAt).hour < 21);
         if ((!readyTonight || g.trainedOn.has(todayDate)) && !force) return null;
-        return { text: `Bu axşam məşq var: <b>${ns.name}</b>. Çantanı götür, qağa — 18:00-da GYM LATVIA!`, markup: openAppButton() };
+        return { text: `10 dəqiqəyə zal, qağa! <b>${ns.name}</b> — 18:00–19:00, GYM LATVIA. Su şüşəsini götür.`, markup: openAppButton() };
       }
       case 'protein': {
         const left = s.protein - t.protein;
@@ -633,7 +703,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
       case 'photos': {
         const lastP = all.photos.filter(p => p.kind === 'progress').map(p => p.date).sort().pop();
         if (lastP && daysBetween(lastP, todayDate) < 13 && !force) return null;
-        return { text: 'Proqres şəkli vaxtıdı: öndən, yannan, arxadan. Eyni yer, eyni işıx, qağa.', markup: openAppButton() };
+        return { text: 'İki həftə tamam oldu, qağa:\n• Proqres şəkli — öndən və yannan, eyni yer, eyni işıx\n• Bel ölçüsü — göbək səviyyəsində, santimetrlə\nİkisini də proqramda "Nəticə" bölməsində yaz.', markup: openAppButton() };
       }
       case 'checkin': {
         if (all.checkins.some(c => c.date === todayDate) && !force) return null;
@@ -671,7 +741,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     const L = [];
     const cw = cycleWeek(s, todayDate);
     L.push(`PƏHLƏVAN REVIEW — last ${days} days (${from} → ${todayDate})`);
-    L.push(`Athlete: ${s.name}, cycle week ${cw.week}/12 (${cw.phase.name}). Targets: ${s.kcal} kcal, ${s.protein} g protein, ${fmtL(s.water)} L water, goal rate −${s.goalRate} kg/week.`);
+    L.push(`Athlete: ${s.name}, cycle week ${cw.week}/${cw.weeks} (${cw.phase.name}). Start ${s.startWeight} kg → goal ${s.goalWeight} kg. Targets: ${s.kcalTrain} kcal gym days / ${s.kcalRest} kcal rest days, ${s.protein} g protein, ${fmtL(s.water)} L water, goal rate −${s.goalRate} kg/week.`);
     L.push('');
     L.push('WORKOUTS');
     const ws = all.workouts.filter(w => w.finished_at && local(w.finished_at).date >= from);
@@ -704,6 +774,8 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     L.push(`CARDIO: ${cardio.length ? cardio.map(c => `${c.date} ${c.minutes} min ${c.kind || ''}`.trim()).join('; ') : 'none'}`);
     const wts = all.weights.filter(w => w.date >= addDays(from, -7));
     L.push(`WEIGH-INS: ${wts.length ? wts.map(w => `${w.date} ${w.kg} kg`).join('; ') : 'none'}`);
+    const wst = await db.q('select date, cm from app.waist where date >= $1 order by date', [addDays(from, -14)]);
+    L.push(`WAIST (cm): ${wst.length ? wst.map(w => `${w.date} ${w.cm}`).join('; ') : 'none'}`);
     L.push(`DAYS OFF WORK: ${all.dayoff.filter(x => x.date >= from).map(x => x.date).join(', ') || 'none'}`);
     L.push(`PHOTOS: ${all.photos.filter(p => p.date >= from).map(p => `${p.date} ${p.kind}${p.caption ? ` (${p.caption})` : ''}`).join('; ') || 'none'}`);
     const scored = Object.entries(g.scores).filter(([d]) => d >= from).map(([, x]) => x.total);
@@ -749,7 +821,10 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
       const meals = await db.q('select * from app.meals where date = $1 order by time, id', [date]);
       const water = (await db.q('select ml from app.water where date = $1', [date]))[0]?.ml || 0;
       const supps = (await db.q('select supplement from app.supps where date = $1', [date])).map(r => r.supplement);
-      return { date, meals, water, supps };
+      const s = await settings();
+      const trained = (await db.q('select finished_at from app.workouts where finished_at is not null')).some(w => local(w.finished_at).date === date);
+      const trainDay = trained || (s.trainDays || []).includes(isoWeekday(date));
+      return { date, meals, water, supps, trainDay, kcalTarget: (trainDay ? s.kcalTrain : s.kcalRest) || s.kcal };
     },
     async meal_add(b) { const id = await addMeal(b); await refresh(); return { id }; },
     async meal_preset(b) { const id = await addPresetMeal(b.preset, b.date); await refresh(); return { id }; },
@@ -768,6 +843,8 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     },
     async weight(b) { await logWeight(b.date, +b.kg); await refresh(); return {}; },
     async weight_delete(b) { await db.q('delete from app.weights where date = $1', [b.date]); await refresh(); return {}; },
+    async waist(b) { const cm = +b.cm; if (!(cm > 50 && cm < 200)) throw new Error('bad waist'); await db.q('insert into app.waist (date, cm) values ($1, $2) on conflict (date) do update set cm = excluded.cm', [b.date, round1(cm)]); return {}; },
+    async waist_delete(b) { await db.q('delete from app.waist where date = $1', [b.date]); return {}; },
     async cardio_add(b) { await db.q('insert into app.cardio (date, minutes, kind) values ($1,$2,$3)', [b.date, Math.round(+b.minutes || 0), String(b.kind || '').slice(0, 40)]); return {}; },
     async cardio_delete(b) { await db.q('delete from app.cardio where id = $1', [b.id]); return {}; },
 
@@ -826,9 +903,11 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
           if (v) trend[ex].push({ date: local(w.finished_at).date, e1rm: round1(v) });
         }
       }
-      // One weigh-in per week (the last of each week).
-      const weekly = {};
-      for (const w of all.weights) weekly[mondayOf(w.date)] = w;
+      // Weekly average of all weigh-ins (the plan weighs 3×/week and compares averages).
+      const byWeek = {};
+      for (const w of all.weights) (byWeek[mondayOf(w.date)] ||= []).push(w.kg);
+      const weekly = Object.fromEntries(Object.entries(byWeek).sort().map(([d, list]) => [d, { date: d, kg: round1(list.reduce((a, b) => a + b, 0) / list.length), n: list.length }]));
+      const waist = await db.q('select date, cm from app.waist order by date');
       const recent = all.workouts.filter(w => w.finished_at).slice(-10).reverse().map(w => ({
         id: w.id, session: w.session, date: local(w.finished_at).date, minutes: Math.round((w.finished_at - w.started_at) / 60000),
         sets: (setsBy[w.id] || []).length, notes: w.notes,
@@ -836,7 +915,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
       return {
         level: { level: g.level, xp: g.xp, levelXp: g.levelXp, levelNeed: g.levelNeed, rank: g.rank.name, parts: g.xpParts },
         ranks: RANKS, tracker: g.tracker, badges: g.badges, best: g.best, trend, oldBest: s.oldBest,
-        weights: Object.values(weekly), allWeights: all.weights, goalRate: s.goalRate, goalWeight: s.goalWeight,
+        weights: Object.values(weekly), allWeights: all.weights, goalRate: s.goalRate, goalWeight: s.goalWeight, startWeight: s.startWeight, waist,
         recent, photos: all.photos.filter(p => p.kind === 'progress').reverse(), streaks: g.streaks,
       };
     },
@@ -884,7 +963,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
     },
     async settings_save(b) {
       const cur = await getKV('settings', {});
-      const allowed = ['name', 'cycleStart', 'playlist', 'kcal', 'protein', 'water', 'goalWeight', 'goalRate', 'benchGoal', 'squatGoal', 'studyPlan', 'studyGoal'];
+      const allowed = ['name', 'cycleStart', 'cycleWeeks', 'playlist', 'kcal', 'kcalTrain', 'kcalRest', 'protein', 'water', 'startWeight', 'goalWeight', 'goalRate', 'trainDays', 'benchGoal', 'squatGoal', 'studyPlan', 'studyGoal'];
       for (const k of allowed) if (b[k] !== undefined) cur[k] = b[k];
       await setKV('settings', cur);
       return { settings: await settings() };

@@ -1,197 +1,185 @@
-# Orkhan's 12-week plan — cut + strength
+# Orkhan's 8-week plan — cut + keep strength
 
-Written 2026-10-20. Week 1 starts **Monday 26 October 2026** (editable in the app as "cycle start date").
-This file is the plan. The app will read the training part from `program.js`, so we can change the plan without touching the app's logic.
+Updated 2026-10-20, adapted from your 8-week plan. Week 1 starts **Monday 26 October 2026** (you can change this in the app: Qalanı → Ayarlar).
+The training program the app uses is in `js/program.js`.
 
 ---
 
-## 1. Starting point and assumptions
+## 1. Starting point
 
 | | |
 |---|---|
-| Age / height / weight | 20 · 177 cm · 110 kg |
-| Job | Active, on your feet, 08:00–17:00, 5 days a week |
-| Training | 3 years with breaks; 3–4 sessions a week at 18:00, GYM LATVIA |
-| Sleep | ~00:30 → 07:00 (about 6.5 h) |
-| Lifts | Bench: 80 kg for full sets, best 100 kg · Squat: best 40 kg (you rarely squat) · No deadlifts |
-| Goal | Lose fat fast, keep or gain strength. Your target: 90 kg |
-| Chosen pace | **Aggressive, about 1.3 kg a week** |
-
-**Honest note on the 90 kg target.** Even at 1.3 kg a week you'll be around **97 kg at week 10**, not 90. Getting to 90 kg in 10 weeks would mean losing 2 kg a week. That would cost you a lot of muscle and strength, and the hunger would get much worse. The plan aims for **90 kg around week 18–20** instead. After that, we switch to maintenance calories and build strength.
+| Age / height | 20 · 177 cm |
+| **Start weight** | **109 kg** |
+| **Long-term goal** | **94 kg** |
+| **8-week aim** | **~100–101 kg** (about 1 kg a week) |
+| Work | Mon–Fri 08:00–17:00, ~8,000 steps (cleaning, bending, squatting, making beds) |
+| Gym | **Mon / Wed / Fri, 18:00–19:00**, GYM LATVIA |
+| Sleep | Aim **22:30 → 06:30–07:00** (7–9 h) |
+| Food habits | Breakfast optional · lunch = rice + meat · dinner = cottage cheese |
 
 ---
 
-## 2. Calories, protein and water
+## 2. Daily targets (your limit: max 1,800–1,900 kcal)
 
-### Calories
-- **BMR (Mifflin–St Jeor, male):** 10 × 110 + 6.25 × 177 − 5 × 20 + 5 = **2,111 kcal**. This is what your body burns at complete rest.
-- **Activity factor 1.6** (active job + lots of walking + 3–4 gym sessions) → **maintenance about 3,380 kcal**.
-- **Deficit for 1.3 kg a week:** 1.3 kg × 7,700 kcal ÷ 7 days ≈ 1,430 kcal a day.
-- **Target: 2,000 kcal every day**, training days and rest days alike, to keep it simple.
-- **Safety floor:** never plan below **1,900 kcal**. If you lose more than 1.6 kg a week for 2 weeks in a row (from week 3 on), add 150 kcal.
-- **Check-ins:** we look at the 2-week weight trend in each review. As you get lighter, weight loss slows by itself. If it drops under 0.8 kg a week, we take off 100 kcal (but not below the floor) or add 1 cardio session.
-
-### Macros
-| | Daily target | Why |
+| | Gym days (Mon/Wed/Fri) | Rest days |
 |---|---|---|
-| **Protein** | **180 g** (720 kcal) | ~2 g per kg of goal weight (90 kg). High protein protects muscle on a hard cut and is the best tool against hunger. |
-| **Fat** | **~60 g** (540 kcal) | ~0.65 g/kg of goal weight, enough for hormones. |
-| **Carbs** | **~185 g** (740 kcal) | The rest, mostly around training (lunch and post-gym dinner). |
+| **Calories** | **1,900 kcal** | **1,800 kcal** |
+| **Protein** | **180 g** (plan delivers ~190 g) | **180 g** (~189 g) |
+| Fat | ~50–60 g | ~50–60 g |
+| Carbs | the rest (~180 g) | the rest (~160 g) |
+| Water | 3.5 L + 0.5 L on gym days | 3.5 L |
 
-The app only tracks **calories and protein**. Fat and carbs follow on their own if you use the plate rule below.
-
-### Water
-- **3.5 L a day**, plus **0.5 L on training days** (35 ml per kg is ~3.85 L; this rounds it). Water also helps with hunger.
-
----
-
-## 3. 12-week training program: one full-body workout, every second day
-
-### How the schedule works
-There is **one workout, the same every time**. You do it **every second day** (e.g. Mon → Wed → Fri → Sun → Tue …), which is about 3–4 times a week. The app shows the next one as **ready 40 hours** after you finish the last one: finish Monday evening, and it's ready on Wednesday. Missing a day just moves it later.
-
-**Time: about 60 minutes.** Warm-up 8 min · lifting ~48 min (three supersets save time) · cool-down 4 min.
-
-### Phases
-| Weeks | Phase | Sets | Effort (reps in reserve = RIR) |
-|---|---|---|---|
-| 1–2 | **Re-entry** | 3 per exercise (2 for arms) | RIR 3 |
-| 3–6 | **Build 1** | Bench 4, others as written | RIR 1–2 |
-| 7 | **Deload** | Half the sets, same weights | RIR 4 |
-| 8–11 | **Build 2** | Bench 4, others as written | RIR 1–2 (small exercises RIR 0–1 on the last set) |
-| 12 | **Test + deload** | Bench: heavy top set of 3–5, then half the sets | RIR 0–1 on the top set |
-
-### Progression rule (double progression)
-- **All sets hit the top of the range** → add the step next time.
-- **Any set fell below the range** → one step lighter.
-- **Otherwise** → same weight, beat your reps.
-
-### Logging machines
-Plate-loaded: plates only · Smith: plates + bar · Dumbbells: one dumbbell.
-
-### The workout
-| # | Exercise | Sets × reps | Rest | Start | Step |
-|---|---|---|---|---|---|
-| 1 | Barbell bench press | 3–4 × 5–7 | 2.5 min | 72.5 kg | +2.5 |
-| 2 | Barbell back squat | 3 × 6–8 | 2 min | 40 kg | +5 |
-| 3 | Wide-grip lat pulldown | 3 × 8–12 | 90 s | 55 kg | +5 |
-| 4a | Seated cable row — **superset** | 3 × 10–12 | — | 50 kg | +5 |
-| 4b | Shoulder press machine | 3 × 8–12 | 90 s | 35 kg | +5 |
-| 5a | Lying leg curl — **superset** | 3 × 10–15 | — | 30 kg | +5 |
-| 5b | Cable crunch | 3 × 12–15 | 60 s | 30 kg | +5 |
-| 6a | EZ-bar curl — **superset** | 2 × 10–15 | — | 25 kg | +2.5 |
-| 6b | Rope triceps pushdown | 2 × 10–15 | 60 s | 25 kg | +2.5 |
-
-**Warm-up:** 5 min bike → band pull-aparts ×15, push-up plus ×10, hip circles ×10, bodyweight squats ×10 → bench ramp: **bar × 10, 50% × 5, 70% × 3, 85% × 1**.
-**Cool-down:** doorway chest stretch, lat stretch on the rack, couch stretch, seated hamstring stretch. **+ 15 min cardio** if you have time (or a walk on the rest day).
-
-Every muscle gets work 3–4 times a week. Chest, back, legs and shoulders are covered by the first five rows; arms and abs are in the supersets. You don't deadlift, so the leg curl covers the back of the legs. Squatting every session will make it climb fast from 40 kg.
-
-### Cardio
-**2 × 15–20 min a week**: after a workout (incline walk 10–12%, 5–5.5 km/h) or as a walk on the rest day.
+**How it's calculated:**
+- BMR (Mifflin–St Jeor, male): 10 × 109 + 6.25 × 177 − 5 × 20 + 5 = **2,101 kcal**.
+- × 1.55 for an active job + 3 gym sessions ≈ **3,250 kcal** maintenance.
+- The average intake is **~1,840 kcal**, so the deficit is **~1,400 kcal a day ≈ 1.2–1.3 kg a week**. We aim for ~1 kg a week, because the job, the steps and the gym might burn a bit less than the formula says.
+- **Never go below 1,800 kcal.** If you lose more than 1.5 kg a week for 2 weeks in a row (after week 2), add 100–150 kcal. If your weekly average doesn't drop for 2–3 weeks, check that you're logging everything first, then take off 100 kcal from carbs (still never below 1,800).
 
 ---
 
-## 4. Realistic estimates
+## 3. Meal plan (cooked weights; one tap each in the app)
 
-### Bodyweight (weekly weigh-in, Monday morning, after the toilet, before food)
-| When | Estimate | Notes |
-|---|---|---|
-| Week 2 | ~106–107 kg | The first drop is partly water. Don't expect this pace to last. |
-| **Week 8** | **~100 kg** | ~1.1–1.3 kg a week after the first 2 weeks |
-| Week 10 | ~97–98 kg | Your original "90 in 10 weeks" target, realistically |
-| Week 12 | ~95–96 kg | Then we review and continue |
-| **4 months** (~week 17) | **~91–93 kg** | |
-| **6 months** | **~88–90 kg**, then maintenance | At ~90 kg we stop cutting and focus on strength |
-
-### Strength (estimated 1-rep max, Epley: weight × (1 + reps ÷ 30))
-| Lift | Now (est.) | 8 weeks | 4 months | 6 months |
-|---|---|---|---|---|
-| Bench press | ~96 kg (80 × 6) | 95–100 kg | 100–105 kg | 102–110 kg (after the cut ends) |
-| Back squat | ~40 kg | 70–80 kg | 90–100 kg | 100–115 kg |
-| Leg press (plates) | — | +40–60 kg vs start | | |
-
-Bench strength may stay flat during the cut, and that's normal. **Not losing strength while dropping 13 kg is a win.** Squats will rise fast because you're new to them.
-
-**Badge goals:** Bench goal = **105 kg** estimated max · Squat goal = **100 kg** estimated max.
-
----
-
-## 5. Eating guide (canteen breakfast + lunch, low budget, you like fish)
-
-### Plate rule (shown in the Food screen)
-Each meal: **2 palms of protein · 1–2 fists of carbs · vegetables (half the plate) · 1 thumb of fat**. After-gym dinner: carbs can be 2 fists.
-
-### A normal day (~2,000 kcal / 180 g protein)
+### Gym day ≈ 1,885 kcal · 191 g protein
 | Time | Meal | kcal | Protein |
 |---|---|---|---|
-| ~08:00 | **Canteen breakfast:** 3 eggs or omelette + bread slice + veg, or porridge + 2 eggs | 450 | 30 g |
-| ~12:30 | **Canteen lunch:** double meat/fish portion + rice/potatoes (1 fist) + salad. Skip the creamy sauce and the sweet drink | 600 | 45 g |
-| ~17:15 | **Pre-gym snack:** kefir 500 ml (or a banana + tuna can) | 200 | 15–26 g |
-| ~19:30 | **Home dinner after gym:** fish (herring, mackerel, cod, canned tuna) or chicken + potatoes/rice + veg | 500 | 45 g |
-| ~22:30 | **Night snack (planned):** cottage cheese (biezpiens) 250 g + cucumber/berries | 250 | 40 g |
-| | **Total** | **~2,000** | **~175–185 g** |
+| 07:00 | 300–500 ml water + black coffee or unsweetened tea · *(optional: 1 boiled egg, +78 kcal)* | 5 | 0 |
+| **12:30** | **Lunch:** chicken breast 220 g · white rice 250 g · vegetables 300 g · olive oil 10 g · **+ creatine 5 g** | 865 | 80 g |
+| **16:30** | **Pre-gym:** skyr 250 g · banana 120 g · whey 30 g | 385 | 53 g |
+| 18:00–19:00 | Gym, water during the workout | | |
+| **20:00** | **Dinner:** cottage cheese 5% 300 g · berries 100 g · walnuts 15 g · whole-grain bread 50 g | 630 | 58 g |
 
-On rest days, swap the pre-gym snack for a coffee and keep the rest.
-
-### Cheap protein in Riga (per ~25 g protein)
-Cottage cheese / biezpiens · kefir · eggs · canned tuna or mackerel · herring (siļķe) · frozen cod/pollock · chicken thighs or breast · lentils/beans. **Optional:** whey protein. It's the cheapest protein per gram if your budget allows one tub a month.
-
-### Night hunger plan (your weak habit)
-1. **Plan the night snack** (250 kcal, high protein) into the day. Hunger is easier to manage when it's planned instead of resisted.
-2. Eat dinner **within 90 minutes after the gym** and make it the biggest-protein meal.
-3. Drink most of your water before 20:00, then **herbal tea or sparkling water** at night.
-4. **Sleep earlier:** move bedtime toward 23:30. Short sleep raises the hunger hormone (ghrelin) a lot.
-5. If hunger hits after the snack, have **cucumber, pickles or sugar-free jelly**. They have almost no calories.
-
-### Sweets rule (not all-or-nothing)
-- **1 dessert a day up to 250 kcal is allowed and counted.** It's inside the 2,000.
-- Or save them up: **2 bigger treats a week** (up to 500 kcal each). Log them; there are no "bad days".
-- The daily score gives full sweets points for **at most 1 dessert**.
-
-### Fast food
-- Fine about **once a week**. Choose a burger without sauce + a small fries or salad + a zero drink (~800–900 kcal). Keep the other meals light that day.
-
----
-
-## 6. Supplements and timing
-
-| Supplement | Dose | When | Have it? |
+### Rest day ≈ 1,800 kcal · 189 g protein
+| Time | Meal | kcal | Protein |
 |---|---|---|---|
-| **Creatine monohydrate** | 5 g | With breakfast (any time works; daily is what matters) | **Buy — cheap, best-proven for strength** |
-| Vitamin D3 | 2,000 IU | With breakfast (needs some fat) | ✔ |
-| Multivitamin | 1 | With breakfast | ✔ |
-| Omega-3 | 1–2 g EPA+DHA | With dinner | ✔ |
-| **Magnesium glycinate** | 200–300 mg | 30 min before bed | **Buy — helps sleep and cramps** |
-| Whey protein (optional) | 1 scoop | When protein is short | Optional |
+| 07:00 | Water + coffee/tea | 5 | 0 |
+| **12:30** | **Lunch:** chicken breast 220 g · rice **220 g** · vegetables 350 g · olive oil 10 g · **+ creatine** | 840 | 80 g |
+| **16:30** | **Snack:** skyr 250 g · apple 150 g · whey 30 g | 355 | 52 g |
+| **20:00** | **Dinner:** cottage cheese 300 g · berries 100 g · walnuts 15 g · bread **40 g** | 605 | 57 g |
 
-**Key supplement for the score: creatine.** Its streak and the morning reminder are built around it.
-Your multivitamin likely covers zinc, so no separate zinc.
+**What changed from your pasted plan (2,085 kcal → 1,840 average):** a little less rice, oil, walnuts and bread. The chicken, skyr, whey and cottage cheese stay, so protein stays high (~190 g). Protein is what protects your muscle and keeps you full.
 
----
+**Night hunger:** dinner at 20:00 is the big-protein meal and comes close to bedtime (22:30). That's the best fix for evening hunger. If you're still hungry, eat cucumber, pickles, or herbal tea.
+**Sweets:** at most 1 small dessert a day (≤250 kcal), counted inside the total. Fast food at most once a week, logged.
+**Cook in batches:** chicken + rice for 2–3 days, kept in the fridge.
 
-## 7. How the app will be built (Supabase version)
-
-You chose to stay on Supabase. This replaces the prompt's Cloudflare parts with Supabase's free equivalents:
-
-| Prompt asks for | We use |
+### Weekly shopping (≈ 3 gym days + 4 rest days)
+| Product | Per week |
 |---|---|
-| Cloudflare Worker (API + bot webhook + `/setup`) | **One Supabase Edge Function** (`api`) |
-| Cron every 5 min | **pg_cron + pg_net** inside your Supabase database, calling the function with a secret |
-| Durable Object SQLite | **Your Supabase Postgres** (the existing `oriks` project). New tables are created by flagged migrations, so old data is kept |
-| Static files from the Worker | **GitHub Pages** (as now). The frontend holds no secrets |
-| Security | Every API call sends Telegram `initData`; the function checks its signature with the bot token and rejects old ones. First `/start` = owner; everyone else gets a 403. The webhook is checked with Telegram's secret header. The bot token lives **only** in Supabase secrets |
-| Photos | Sent to your bot chat with `sendPhoto`; only the `file_id` is stored, and the function streams photos back |
-| Deploy | A GitHub Action deploys the function on every push to `main`, then calls `/setup` (webhook, menu button, commands, cron job) |
-
-The **email login screen goes away**, because Telegram identifies you on its own. The 228228 PIN stays.
+| Chicken breast (cooked) | ~1.55 kg |
+| White rice (cooked) | ~1.65 kg |
+| Vegetables | ~2.3 kg |
+| Cottage cheese 5% | 2.1 kg |
+| Skyr | 1.75 kg |
+| Whey protein | 210 g |
+| Bananas / apples | 3 bananas / 4 apples |
+| Berries (frozen is fine) | 700 g |
+| Walnuts | 105 g |
+| Whole-grain bread | ~310 g |
+| Olive oil | 70 g |
 
 ---
 
-## 8. Gamification (Ganja theme)
+## 4. Supplements
 
-- **Daily score 0–100:** protein 25 · calories 20 · water 20 · creatine 10 · training/recovery 15 · sweets 10. A day scoring 80+ is a **"special day"** and gets a gold cell in the 12-week tracker.
-- **XP:** 1 per score point · workout +50 · new best set +25 · weigh-in +20 · evening check-in +10 · badge +100. Level L needs 200 + 100 × L XP.
-- **Ranks:** **Sveji** (1–2) → **Kələ** (3–5) → **Kaçok** (6–9) → **Əjdaha** (10+).
-- **Streaks:** creatine, water, logging (2+ meals), training (weeks with 3+ sessions), with at-risk warnings.
-- **Badges:** the 12 from the prompt, with the bench goal at 105 kg and the squat goal at 100 kg.
+| Time | Supplement | Notes |
+|---|---|---|
+| **12:30 with lunch** | **Creatine monohydrate 5 g** | Every day, rest days too, no loading. This is the key supplement in the app's score. |
+| 12:30 with lunch | Vitamin D3 | You have it. Riga is dark in winter; dose as on the label (or a blood test) |
+| 12:30 with lunch | Omega-3 | You have it; useful because fish isn't in this plan every day |
+| 12:30 with lunch | Multivitamin | You have it |
+| 16:30 | Whey 30 g | Part of the snack, so it's logged as food, not as a supplement |
+| Before bed | Magnesium | Optional (sleep, cramps) |
+
+**Avoid:** fat burners, diuretics, stimulant-heavy pre-workouts.
+**Water weight:** creatine adds ~1 kg of water in the first 1–2 weeks. That's not fat, so don't panic about it.
+
+---
+
+## 5. Training — one full-body workout, Mon / Wed / Fri, 18:00–19:00
+
+I kept the workout you asked for (the same every time, ~60 min) instead of the pasted plan's three different sessions. The weekly structure is the same: 3 full-body sessions, with walking on rest days.
+
+| # | Exercise | Sets × reps | Rest | Start |
+|---|---|---|---|---|
+| 1 | Barbell bench press | 3–4 × 5–7 | 2.5 min | 72.5 kg |
+| 2 | Barbell back squat | 3 × 6–8 | 2 min | 40 kg |
+| 3 | Wide-grip lat pulldown | 3 × 8–12 | 90 s | 55 kg |
+| 4 | Seated cable row **+** shoulder press machine (superset) | 3 × 10–12 / 8–12 | 90 s | 50 / 35 kg |
+| 5 | Lying leg curl **+** cable crunch (superset) | 3 × 10–15 / 12–15 | 60 s | 30 / 30 kg |
+| 6 | EZ-bar curl **+** rope pushdown (superset) | 2 × 10–15 | 60 s | 25 / 25 kg |
+
+Warm-up 8 min (bike + mobility + bench ramp-up sets) · cool-down 4 min of stretching.
+
+### 8-week phases (from your plan)
+| Weeks | Phase | What to do |
+|---|---|---|
+| 1–2 | **Qayıdış** (re-entry) | Moderate weights, technique first, 2–3 reps in reserve, never to failure |
+| 3–4 | **Güc yığırıx** (build) | Add weight when it gets easy; bench goes to 4 sets |
+| 5–6 | **Güc yığırıx II** (build) | Keep adding weight, watch your recovery |
+| 7–8 | **Saxla + bərkit** (hold) | Keep your strength, no extra sets, sleep and recovery first |
+
+Progression (the app suggests every weight): when all sets hit the top of the rep range, add the step next time. When a set falls below the range, go one step lighter.
+
+**Rest days (Tue / Thu / Sat / Sun):** normal work, ~8,000 steps, light stretching. On weekends, walk 6,000–10,000 steps.
+
+---
+
+## 6. Reminders (bot, 10 minutes before each action, Riga time)
+
+| Time | Reminder | Smart rule |
+|---|---|---|
+| **06:50** | Morning: water + coffee, motivation, today's target · **Mon/Wed/Fri: weigh yourself** | Weigh-in line skipped once weighed |
+| **12:20** | Lunch + **creatine**, D3, omega-3, multi | Buttons log lunch and each supplement; skipped if all done |
+| 15:00 | Water check | Only if under half the target |
+| **16:20** | Snack / pre-gym: skyr + fruit + whey | Skipped once logged |
+| **17:50** (Mon/Wed/Fri) | Gym at 18:00 | Only if the workout is ready and not done today |
+| **19:50** | Dinner: cottage cheese | Shows how much protein and kcal is left; skipped once logged |
+| 21:30 | Evening check-in (close the day) | Skipped if the day is already closed |
+| **22:20** | Bedtime 22:30 + magnesium | — |
+| 10:00 Sunday | Photos + waist every 2 weeks | Skipped if photos are newer than 13 days |
+
+You can change each time, switch it on or off, or **Test** it in Qalanı → Xatırlatmalar.
+
+---
+
+## 7. Tracking
+
+- **Weight:** in the morning after the toilet, before food, **Mon / Wed / Fri**. Just send the number to the bot. The app charts the **weekly average**.
+- **Every 2 weeks:** **waist at belly-button level** (Nəticə → Bel ölçüsü), **front + side photos**, and compare strength.
+- **Adjust** (we do it together in the weekly "Claude ilə baxış" review):
+  - Losing **0.5–1.3 kg a week** → keep going.
+  - **No drop for 2–3 weeks** → check your logging, then −100 kcal (still ≥ 1,800).
+  - **Dropping very fast, or tired/weak** → +100–150 kcal and more sleep.
+
+## 8. Expected progress (estimates, not promises)
+
+| Week | Weight |
+|---|---|
+| Start | 109 kg |
+| Week 2 | 106.5–107.5 kg (includes water; creatine adds some back) |
+| Week 4 | 104.5–105.5 kg |
+| Week 6 | 102.5–104 kg |
+| **Week 8** | **~100–102 kg** |
+| 94 kg | ~week 14–17, then switch to maintenance + strength |
+
+Bench should stay around 95–100 kg estimated max. Squat should climb quickly from 40 kg because it's new to you.
+
+## 9. Rules
+1. Hit 180 g protein every day. It matters more than hitting calories exactly.
+2. Stay within 1,800–1,900 kcal.
+3. 3 workouts a week, keep 2–3 reps in reserve in weeks 1–2.
+4. Creatine every day.
+5. Sleep 7–9 hours, in bed by 22:30.
+6. Judge progress by the weekly average and your waist, not one morning's weight.
+7. No crash diets, fat burners or extra cardio sessions. Your job is already your cardio.
+
+---
+
+## 10. The app (technical)
+- **Frontend:** GitHub Pages. **Backend:** a Supabase Edge Function (`pehlevan`) with the bot webhook and reminders every 5 minutes (pg_cron).
+- **Security:** Telegram `initData` signature, a single owner, and the webhook secret.
+- **Gamification:**
+  - **Daily score:** protein 25 · calories 20 (gym day 1,900 / rest day 1,800) · water 20 · creatine 10 · training 15 · sweets 10.
+  - **Ranks:** **Sveji → Kələ → Kaçok → Əjdaha.**
+  - **Tracker:** 8 weeks × 4 flames.

@@ -53,13 +53,16 @@ let st = await api('state');
 assert.equal(st.ok, true); assert.equal(st.today, today); assert.equal(st.cycle.week, 1); assert.equal(st.next.id, 'FB'); assert.ok(st.motivation.length > 5);
 ok('state: week 1, default full-body session, motivation of the day');
 await api('sync', { sessions: [{ id: 'A', name: 'Bütün bədən A' }, { id: 'B', name: 'Bütün bədən B' }, { id: 'C', name: 'Bütün bədən C' }] });
-await api('meal_preset', { preset: 'breakfast', date: today });
-await api('meal_preset', { preset: 'lunch', date: today });
+await api('meal_preset', { preset: 'lunch_train', date: today });
+await api('meal_preset', { preset: 'snack_train', date: today });
 const custom = await api('meal_add', { date: today, name: 'Balıx və kartof', kcal: 520, protein: 46, comment: 'toyuq yox idi, balıx yedim' });
 await api('water', { date: today, delta: 2000 });
 await api('supp', { date: today, id: 'creatine', on: true });
 st = await api('state');
-assert.equal(st.score.kcal, 1570); assert.equal(st.score.protein, 121); assert.equal(st.score.parts.supp, 10); assert.equal(st.score.parts.sweets, 10);
+assert.equal(st.score.kcal, 1770); assert.equal(st.score.protein, 179);
+assert.equal(st.score.kcalTarget, 1900); assert.equal(st.score.trainDay, true); ok('Monday is a gym day: 1,900 kcal target');
+assert.equal((await api('day', { date: '2026-10-27' })).kcalTarget, 1800); ok('Tuesday is a rest day: 1,800 kcal target');
+assert.equal(st.settings.goalWeight, 94); assert.equal(st.settings.startWeight, 109); assert.equal(st.cycle.weeks, 8); ok('goals: 109 → 94 kg, 8-week block'); assert.equal(st.score.parts.supp, 10); assert.equal(st.score.parts.sweets, 10);
 ok(`score computed on the server (${st.score.total}/100)`);
 await api('meal_update', { id: custom.id, name: 'Balıx və kartof', kcal: 480, protein: 46, comment: 'yağsız' });
 const day = await api('day', { date: today });
@@ -108,16 +111,20 @@ console.log('Reminders (cron)');
 // Tue 3 Nov 2026 — set the clock to 07:16 Riga
 clock.ms = Date.parse('2026-11-03T05:16:00Z');
 let r = await cron();
-assert.deepEqual(r.sent, ['morning']); ok('07:15 morning reminder');
-assert.ok(lastMsg().payload.reply_markup.inline_keyboard[0].some(b => b.callback_data === 'supp:creatine')); ok('morning reminder has supplement buttons');
+assert.deepEqual(r.sent, ['morning']); ok('06:50 morning reminder (10 min before 07:00)');
+assert.ok(lastMsg().payload.reply_markup.inline_keyboard[0].some(b => b.callback_data === 'water:500')); ok('morning reminder has a water button');
 r = await cron(); assert.deepEqual(r.sent, []); ok('not sent twice');
+clock.ms = Date.parse('2026-11-03T10:21:00Z'); // 12:21 — Tuesday, a rest day
+r = await cron(); assert.deepEqual(r.sent, ['lunch']); ok('12:20 lunch + creatine reminder');
+const lunchKb = lastMsg().payload.reply_markup.inline_keyboard.flat().map(b => b.callback_data);
+assert.ok(lunchKb.includes('meal:lunch_rest') && lunchKb.includes('supp:creatine')); ok('lunch reminder: rest-day lunch + creatine buttons');
 await cb('supp:creatine');
 clock.ms = Date.parse('2026-11-03T13:02:00Z'); // 15:02
 r = await cron(); assert.deepEqual(r.sent, ['water']); ok('15:00 water check (under half)');
 clock.ms = Date.parse('2026-11-03T17:44:00Z'); // 19:44 — omega reminder not yet
 r = await cron(); assert.deepEqual(r.sent, []); ok('nothing before its time');
 clock.ms = Date.parse('2026-11-03T19:50:00Z'); // 21:50
-r = await cron(); assert.ok(r.sent.includes('checkin') && r.sent.includes('protein')); ok('evening: protein + check-in');
+r = await cron(); assert.deepEqual(r.sent, ['checkin']); ok('21:30 evening check-in');
 const kb = lastMsg().payload.reply_markup.inline_keyboard.flat().map(b => b.callback_data);
 assert.ok(kb.includes('meal:fastfood') && kb.includes('close')); ok('check-in buttons');
 await cb('meal:cottage'); await cb('meal:shake');
@@ -130,6 +137,12 @@ assert.equal((await api('reminders')).list.find(x => x.id === water.id).enabled,
 const t = await api('reminder_test', { id: water.id });
 assert.equal(t.sent, true); assert.match(lastMsg().payload.text, /Sınax/); ok('"Test" sends one now');
 
+clock.ms = Date.parse('2026-11-04T15:51:00Z'); // Wed 17:51 — gym day
+r = await cron(); assert.ok(r.sent.includes('workout')); assert.match(lastMsg().payload.text, /10 dəqiqəyə zal/); ok('17:50 gym reminder on Mon/Wed/Fri');
+clock.ms = Date.parse('2026-11-04T20:21:00Z'); // 22:21
+r = await cron(); assert.ok(r.sent.includes('bed')); ok('22:20 bedtime reminder');
+clock.ms = Date.parse('2026-11-03T20:30:00Z');
+
 console.log('Photos, progress, review, more');
 const tiny = Buffer.from('/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==', 'base64');
 const up = await api('photo_upload', { kind: 'progress', date: '2026-11-03', caption: 'öndən', data: tiny.toString('base64') });
@@ -138,8 +151,11 @@ const img = await app.handle(new Request(`${BASE}/photo?f=${up.file_id}&init=${e
 assert.equal(img.status, 200); assert.equal((await img.arrayBuffer()).byteLength, tiny.length); ok('photo streamed back through the function');
 const strangerImg = await app.handle(new Request(`${BASE}/photo?f=${up.file_id}&init=${encodeURIComponent(await h.initData(stranger))}`));
 assert.equal(strangerImg.status, 403); ok('photo blocked for strangers');
+await api('waist', { date: '2026-11-03', cm: 112.5 });
 const pr = await api('progress');
-assert.equal(pr.tracker.length, 12); assert.equal(pr.tracker[0].cells.filter(Boolean).length, 2); assert.equal(pr.trend.bench.length, 2);
+assert.equal(pr.waist[0].cm, 112.5); ok('waist measurement saved');
+assert.equal(pr.weights.length, 2); ok('weekly average weight series');
+assert.equal(pr.tracker.length, 8); assert.equal(pr.tracker[0].cells.filter(Boolean).length, 2); assert.equal(pr.trend.bench.length, 2);
 assert.ok(pr.badges.find(b => b.id === 'first_rep').earned); ok('progress: tracker, e1RM trend, badges');
 const rv = await api('review', { days: 14 });
 assert.match(rv.text, /WORKOUTS/); assert.match(rv.text, /bench: 72.5×7, 72.5×7, 72.5×7/); assert.match(rv.text, /yağsız/); assert.match(rv.text, /GAMIFICATION: level/); ok('review text for Claude');

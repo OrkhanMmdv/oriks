@@ -14,9 +14,9 @@ export function render() {
   const cardio = st.week.cardio || [];
   return `${header(st, 'Məşq')}
   <article class="card phase-note">
-    <p class="label gold">${st.cycle.week ? `Həftə ${st.cycle.week} / 12` : `${st.cycle.startsIn} günə başdıyır`} · ${esc(phase.name)}</p>
+    <p class="label gold">${st.cycle.week ? `Həftə ${st.cycle.week} / ${st.cycle.weeks}` : `${st.cycle.startsIn} günə başdıyır`} · ${esc(phase.name)}</p>
     <p class="small">${esc(phase.note)} RIR: ${esc(phase.rir)}.</p>
-    <div class="week-bar">${Array.from({ length: 12 }, (_, i) => `<span class="${i + 1 < st.cycle.week ? 'past' : i + 1 === st.cycle.week ? 'now' : ''} ${i + 1 === 7 || i + 1 === 12 ? 'rest' : ''}"></span>`).join('')}</div>
+    <div class="week-bar">${Array.from({ length: st.cycle.weeks }, (_, i) => `<span class="${i + 1 < st.cycle.week ? 'past' : i + 1 === st.cycle.week ? 'now' : ''}"></span>`).join('')}</div>
   </article>
 
   <article class="card next ${st.next.ready ? 'is-ready' : ''}">
@@ -27,7 +27,7 @@ export function render() {
       <button class="btn fire grow" data-a="start" data-v="${next.id}">${st.draft ? 'Davam elə' : 'Başdıyax'}</button>
       ${st.draft || SESSIONS.length < 2 ? '' : '<button class="btn ghost" data-a="skip">Ötür</button>'}
     </div>
-    <p class="muted tiny">${SESSIONS.length === 1 ? 'Hər dəfə eyni proqram, 2 gündən bir. Gün buraxsan, sadəcə gecikir.' : `Növbə: ${SESSIONS.map(x => x.id === next.id ? `<b>${x.id}</b>` : x.id).join(' → ')} → … Gün buraxsan, sadəcə gecikir.`}</p>
+    <p class="muted tiny">${SESSIONS.length === 1 ? 'Hər dəfə eyni proqram: B.e, Ç, C — 18:00–19:00. Gün buraxsan, sadəcə gecikir.' : `Növbə: ${SESSIONS.map(x => x.id === next.id ? `<b>${x.id}</b>` : x.id).join(' → ')} → … Gün buraxsan, sadəcə gecikir.`}</p>
   </article>
 
   <h3 class="section">${SESSIONS.length === 1 ? 'Proqram' : 'Bütün məşqlər'}</h3>

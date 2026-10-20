@@ -24,7 +24,21 @@ export function render() {
     return pts.length ? lineChart(pts, { refs: [{ y: p.oldBest[ex], label: `köhnə rekord ${p.oldBest[ex]}` }], unit: '' }) : '<p class="muted small pad">Hələ məlumat yoxdu.</p>';
   };
 
+  // Goal card: start → now → long-term goal, plus the 8-week aim (~1 kg a week).
+  const start = p.startWeight, goalW = p.goalWeight;
+  const nowW = p.allWeights.length ? p.allWeights[p.allWeights.length - 1].kg : start;
+  const lost = Math.round((start - nowW) * 10) / 10;
+  const blockAim = Math.round((start - st.cycle.weeks * p.goalRate) * 10) / 10;
+  const waistRows = p.waist.slice(-6).reverse();
+
   return `${header(st, 'Nəticə')}
+  <article class="card goal-card">
+    <p class="label gold">Hədəf</p>
+    <div class="goal-row"><div><b>${kg(start)}</b><span>başlanğıc</span></div><div class="now"><b>${kg(nowW)}</b><span>indi</span></div><div><b>${kg(goalW)}</b><span>hədəf</span></div></div>
+    ${bar(Math.max(0, start - nowW), Math.max(1, start - goalW), 'ember thick')}
+    <p class="muted small">${lost > 0 ? `${kg(lost)} kq atmısan, qağa` : 'Başdıyırıx'} · ${st.cycle.weeks} həftəlik hədəf ≈ ${kg(blockAim)} kq · uzun hədəf ${kg(goalW)} kq</p>
+  </article>
+
   <article class="card rank-card">
     <div class="row gap center-y">${flame('lg lit gold')}<div class="grow"><p class="label gold">Rütbə</p><h2>${esc(L.rank)} · Səviyyə ${L.level}</h2><p class="muted small">Cəmi ${L.xp} XP</p></div></div>
     ${bar(L.levelXp, L.levelNeed, 'ember thick')}
@@ -33,7 +47,7 @@ export function render() {
   </article>
 
   <article class="card tracker-card">
-    <h3>12 həftəlik tonqal</h3>
+    <h3>${p.tracker.length} həftəlik tonqal</h3>
     <p class="muted tiny">Hər məşq bir alov yandırır. Qızılı alov = 80+ xallı gündə məşq.</p>
     <div class="tracker">
       ${p.tracker.map(row => `<div class="t-row ${row.current ? 'current' : ''}"><span class="t-week">${row.week}</span>
@@ -42,7 +56,7 @@ export function render() {
   </article>
 
   <article class="card">
-    <h3>Bədən çəkisi</h3><p class="muted tiny">Həftədə 1 dəfə çəki · yaşıl qırıq xətt = hədəf (−${p.goalRate} kq/həftə)</p>
+    <h3>Bədən çəkisi</h3><p class="muted tiny">Həftədə ən azı 3 dəfə səhər çəkil (B.e, Ç, C). Qrafik həftəlik ortalamanı göstərir · yaşıl qırıq xətt = hədəf (−${p.goalRate} kq/həftə)</p>
     ${lineChart(wPts, { dashed: goal, unit: '' })}
     <div class="row gap tight">
       <label class="field grow"><input id="wkg" type="number" inputmode="decimal" step="0.1" placeholder="104.6" aria-label="Çəki"><span>kq</span></label>
@@ -50,6 +64,19 @@ export function render() {
     </div>
     <p class="muted tiny">Və ya bota sadəcə rəqəm göndər: "104.6".</p>
     ${p.allWeights.slice(-5).reverse().map(x => `<div class="list-row"><span class="grow">${niceDate(x.date, st.today)}</span><b>${kg(x.kg)} kq</b><button class="icon-btn small" data-a="delWeight" data-v="${x.date}" aria-label="Sil">${icon.trash}</button></div>`).join('')}
+  </article>
+
+  <article class="card">
+    <h3>Bel ölçüsü</h3><p class="muted tiny">2 həftədən bir, göbək səviyyəsində, səhər.</p>
+    <div class="row gap tight">
+      <label class="field grow"><input id="wcm" type="number" inputmode="decimal" step="0.5" placeholder="112" aria-label="Bel, sm"><span>sm</span></label>
+      <button class="btn soft" data-a="logWaist">Yaz</button>
+    </div>
+    ${waistRows.length ? waistRows.map((x, i) => {
+      const prev = waistRows[i + 1];
+      const d = prev ? Math.round((x.cm - prev.cm) * 10) / 10 : null;
+      return `<div class="list-row"><span class="grow">${niceDate(x.date, st.today)}</span>${d != null ? `<span class="muted small">${d > 0 ? '+' : ''}${d}</span>` : ''}<b>${kg(x.cm)} sm</b><button class="icon-btn small" data-a="delWaist" data-v="${x.date}" aria-label="Sil">${icon.trash}</button></div>`;
+    }).join('') : '<p class="muted small">Hələ ölçü yoxdu.</p>'}
   </article>
 
   <article class="card"><h3>Bençpres — təxmini maksimum</h3>${chartFor('bench')}</article>
@@ -89,6 +116,15 @@ export function render() {
 }
 
 export const actions = {
+  async logWaist() {
+    const v = parseFloat(String(document.getElementById('wcm').value).replace(',', '.'));
+    if (!(v > 50 && v < 200)) return toast('Düz ölçü yaz, qağa (sm)');
+    await run(async () => { await call('waist', { date: S.st.today, cm: v }); haptic('ok'); toast('Bel ölçüsü yazıldı'); await load(); app.render(); });
+  },
+  async delWaist(date) {
+    if (!(await ask('Bu ölçünü silək?'))) return;
+    await run(async () => { await call('waist_delete', { date }); await load(); app.render(); });
+  },
   async logWeight() {
     const v = parseFloat(String(document.getElementById('wkg').value).replace(',', '.'));
     if (!(v > 30 && v < 300)) return toast('Düz çəki yaz, qağa');

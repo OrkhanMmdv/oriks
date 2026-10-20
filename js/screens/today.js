@@ -4,6 +4,9 @@ import { call } from '../api.js';
 import { esc, fmtL, kg, icon, ring, bar, flameStrip, flame, haptic, toast, openLink, niceDate, addDays } from '../ui.js';
 import { SESSIONS, EXERCISES, PHASES } from '../program.js';
 
+// Azerbaijani ordinal ending: 1-ci, 3-cü, 6-cı, 9-cu …
+export const ordinal = n => ({ 1: 'ci', 2: 'ci', 3: 'cü', 4: 'cü', 5: 'ci', 6: 'cı', 7: 'ci', 8: 'ci', 9: 'cu', 10: 'cu', 11: 'ci', 12: 'ci' }[n] || 'ci');
+
 export function greeting(hm) {
   const h = +hm.split(':')[0];
   if (h >= 5 && h < 12) return 'Sabahın xeyir';
@@ -32,8 +35,9 @@ export function render() {
   const st = S.st, s = st.settings, sc = st.score;
   const session = SESSIONS.find(x => x.id === st.next.id) || SESSIONS[0];
   const phase = PHASES[st.cycle.phase.id];
-  const weekLine = st.cycle.week === 0 ? `Proqram ${st.cycle.startsIn} günə başdıyır` : `12 həftənin <b>${st.cycle.week}-cü həftəsi</b> · ${esc(phase.name)}`;
-  const kcalLeft = Math.max(0, s.kcal - sc.kcal), protLeft = Math.max(0, s.protein - sc.protein);
+  const weekLine = st.cycle.week === 0 ? `Proqram ${st.cycle.startsIn} günə başdıyır` : `${st.cycle.weeks} həftənin <b>${st.cycle.week}-${ordinal(st.cycle.week)} həftəsi</b> · ${esc(phase.name)}`;
+  const kT = sc.kcalTarget || s.kcal;
+  const kcalLeft = Math.max(0, kT - sc.kcal), protLeft = Math.max(0, s.protein - sc.protein);
   const partsHtml = Object.entries(PART_NAMES).map(([k, [name, max]]) => {
     const v = sc.parts[k] || 0;
     const cls = v >= max ? 'good' : v > 0 ? 'mid' : 'bad';
@@ -84,7 +88,8 @@ export function render() {
   </article>
 
   <article class="card">
-    <div class="meter"><span>Kalori</span><b>${sc.kcal} / ${s.kcal}</b></div>${bar(sc.kcal, s.kcal, sc.kcal > s.kcal * 1.1 ? 'over' : 'gold')}
+    <p class="label">${sc.trainDay ? 'Məşq günü' : 'İstirahət günü'} · hədəf ${kT} kkal</p>
+    <div class="meter"><span>Kalori</span><b>${sc.kcal} / ${kT}</b></div>${bar(sc.kcal, kT, sc.kcal > kT * 1.1 ? 'over' : 'gold')}
     <div class="meter"><span>Zülal</span><b>${sc.protein} / ${s.protein} q</b></div>${bar(sc.protein, s.protein, 'red')}
     <p class="muted small">${kcalLeft || protLeft ? `Hələ ${kcalLeft} kkal, ${protLeft} q zülal qalıf` : 'Bu günlük hədəf tamamdı, halaldı!'}</p>
     <hr>

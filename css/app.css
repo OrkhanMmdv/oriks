@@ -252,6 +252,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--gold); }
 .day-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .day-nav b { font: 700 20px "Noto Serif Display", serif; }
 .plate p { font-size: 14px; }
+.menu-time { font-weight: 700; color: var(--gold-text); width: 46px; flex: none; font-size: 14px; }
 .presets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .preset { text-align: left; padding: 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); min-height: 72px; display: flex; flex-direction: column; justify-content: space-between; transition: transform .12s, border-color .2s; }
 .preset:active { transform: scale(.96); border-color: var(--gold); }
@@ -269,6 +270,11 @@ input:focus, textarea:focus, select:focus { border-color: var(--gold); }
 .meal-edit { display: flex; flex-direction: column; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--line); }
 
 /* ---------- progress ---------- */
+.goal-card { border-color: var(--gold); }
+.goal-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); text-align: center; margin: 6px 0 4px; }
+.goal-row b { display: block; font: 700 24px "Noto Serif Display", serif; }
+.goal-row span { font-size: 11px; color: var(--muted); }
+.goal-row .now b { color: var(--gold-text); font-size: 30px; }
 .rank-card { background: linear-gradient(160deg, rgba(224, 83, 63, .18), transparent 55%), var(--card); border-color: var(--quote-line); }
 .ladder { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; list-style: none; padding: 0; margin: 14px 0 0; }
 .ladder li { text-align: center; padding: 8px 4px; border-radius: 12px; background: var(--card2); border: 1px solid var(--line); }

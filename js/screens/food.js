@@ -12,6 +12,7 @@ export async function load() {
 export function render() {
   const st = S.st, s = st.settings, d = S.day;
   if (!d) return `${header(st, 'Yemək')}<p class="pad muted">Yüklənir…</p>`;
+  const kT = d.kcalTarget || s.kcal;
   const kcal = d.meals.reduce((a, m) => a + m.kcal, 0), prot = d.meals.reduce((a, m) => a + m.protein, 0);
   const target = s.water; // past days: plain target (today uses the server value incl. the training bonus)
   const isToday = d.date === st.today;
@@ -24,12 +25,15 @@ export function render() {
   </div>
 
   <article class="card">
-    <div class="meter"><span>Kalori</span><b>${kcal} / ${s.kcal}</b></div>${bar(kcal, s.kcal, kcal > s.kcal * 1.1 ? 'over' : 'gold')}
+    <p class="label">${d.trainDay ? 'Məşq günü' : 'İstirahət günü'} · hədəf ${kT} kkal</p>
+    <div class="meter"><span>Kalori</span><b>${kcal} / ${kT}</b></div>${bar(kcal, kT, kcal > kT * 1.1 ? 'over' : 'gold')}
     <div class="meter"><span>Zülal</span><b>${prot} / ${s.protein} q</b></div>${bar(prot, s.protein, 'red')}
-    <p class="strong small">${kcal < s.kcal || prot < s.protein ? `Hələ ${Math.max(0, s.kcal - kcal)} kkal, ${Math.max(0, s.protein - prot)} q zülal qalıf` : 'Hədəf tamamdı, qağa!'}</p>
+    <p class="strong small">${kcal < kT || prot < s.protein ? `Hələ ${Math.max(0, kT - kcal)} kkal, ${Math.max(0, s.protein - prot)} q zülal qalıf` : 'Hədəf tamamdı, qağa!'}</p>
     <hr>
     ${waterBlock(d.water, isToday ? st.score.waterTarget : target, d.date)}
   </article>
+
+  ${menuCard(st, d)}
 
   <article class="card plate">
     <p class="label gold">Boşqab qaydası</p>
@@ -80,8 +84,33 @@ export function render() {
     </button>`).join('')}</article>` : '<p class="muted center pad">Hələ heç nə yazılmıyıf.</p>'}`;
 }
 
+// The day's meal plan (gym day vs rest day), one tap each. Times match the bot reminders.
+function menuCard(st, d) {
+  const kind = d.trainDay ? 'train' : 'rest';
+  const rows = [
+    ['07:00', 'coffee', 'Su 300–500 ml + qara kofe (yumurta — istəsən)'],
+    ['12:30', `lunch_${kind}`, null],
+    ['16:30', `snack_${kind}`, null],
+    ['20:00', `dinner_${kind}`, null],
+  ];
+  const done = new Set(d.meals.map(m => m.preset));
+  return `<article class="card menu">
+    <p class="label gold">Bu günün menyusu · ${d.trainDay ? 'məşq günü' : 'istirahət günü'}</p>
+    ${rows.map(([time, id, text]) => {
+      const p = st.presets.find(x => x.id === id);
+      if (!p) return '';
+      const on = done.has(id);
+      return `<button class="check-row ${on ? 'on' : ''}" data-a="${on ? 'noop' : 'preset'}" data-v="${esc(id)}" aria-pressed="${on}">
+        <span class="check">${on ? icon.check : ''}</span><span class="menu-time">${time}</span>
+        <span class="grow">${esc(text || p.name.replace(/^[^:]*:\s*/, ''))}</span><span class="muted small">${p.kcal}</span></button>`;
+    }).join('')}
+    <p class="muted tiny">Cəmi ≈ ${rows.reduce((a, [, id]) => a + ((st.presets.find(x => x.id === id) || {}).kcal || 0), 0)} kkal · kreatin naharnan.</p>
+  </article>`;
+}
+
 let pendingPhoto = null;
 export const actions = {
+  noop() { toast('Artıq yazılıb ✓'); },
   async prevDay() { S.foodDate = addDays(S.day.date, -1); await run(load); app.render(); },
   async nextDay() { if (S.day.date >= S.st.today) return; S.foodDate = addDays(S.day.date, 1); await run(load); app.render(); },
   async preset(id) {

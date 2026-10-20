@@ -161,10 +161,11 @@ export const SESSIONS = [
 
 // Phases by week. sets(ex, i) decides how many sets an exercise gets.
 export const PHASES = {
-  reentry: { name: 'Qayıdış', rir: '3', note: 'Yüngül başdıyırıx: hər hərəkət 3 set, 3 təkrar ehtiyatda saxla.' },
-  build1: { name: 'Güc yığırıx', rir: '1–2', note: 'Bençpres 4 set, qalanı yazıldığı kimi. Son setdə 1–2 təkrar ehtiyat qalsın.' },
+  reentry: { name: 'Qayıdış', rir: '2–3', note: 'Həftə 1–2: orta çəki, texnika birinci. 2–3 təkrar ehtiyatda saxla, tükənməyə qədər getmə.' },
+  build1: { name: 'Güc yığırıx', rir: '1–2', note: 'Həftə 3–4: asan gələndə çəkini artır. Bençpres 4 set.' },
+  keep: { name: 'Saxla + bərkit', rir: '2', note: 'Son 2 həftə: gücü saxla, artıq set əlavə eləmə. Yuxu və bərpa birinci yerdədi.' },
   deload: { name: 'Nəfəs dərmə', rir: '4', note: 'Çəki eyni, setlər yarı. Bədən dincəlsin, qağa.' },
-  build2: { name: 'Güc yığırıx II', rir: '1–2', note: 'Bençpres yenə 4 set. Kiçik hərəkətlərdə son set az qala tükənməyə qədər.' },
+  build2: { name: 'Güc yığırıx II', rir: '1–2', note: 'Həftə 5–6: yükü artırmağa davam, yorğunluğa bax.' },
   test: { name: 'Sınax + dincəlmə', rir: '0–1', note: 'Birinci hərəkətdə ağır set: 3–5 təkrar. Qalanı yarı set.' },
 };
 
@@ -172,6 +173,7 @@ export function setsFor(ex, index, phaseId) {
   const base = ex.sets;
   if (phaseId === 'reentry') return Math.min(base, 3);
   if (phaseId === 'deload' || phaseId === 'test') return Math.ceil(base / 2);
+  if (phaseId === 'keep') return base;            // hold: no extra volume while cutting
   return index === 0 && ex.setsBuild ? ex.setsBuild : base;
 }
 
