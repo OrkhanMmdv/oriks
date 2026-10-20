@@ -26,14 +26,17 @@ const api = async (action, body = {}, user = OWNER) => {
 };
 const cron = () => app.handle(new Request(BASE + '/cron', { method: 'POST', headers: { 'x-cron-key': cronKey } })).then(r => r.json());
 const lastMsg = () => [...calls].reverse().find(c => c.method === 'sendMessage');
-const msg = (text, from = OWNER) => hook({ message: { message_id: 1, from, chat: { id: from.id }, text } });
+const msg = (text, from = OWNER) => hook({ message: { message_id: 1, from, chat: { id: from.id, type: 'private' }, text } });
 const cb = (data, from = OWNER) => hook({ callback_query: { id: 'cb' + Math.random(), from, data, message: { chat: { id: from.id } } } });
 const today = '2026-10-26';
 
 console.log('Security');
 assert.equal((await app.handle(new Request(BASE + '/health'))).status, 200); ok('health');
-assert.equal((await hook({ message: { text: '/start', from: OWNER, chat: { id: 1001 } } }, 'wrong')).status, 401); ok('webhook rejects a wrong secret header');
+assert.equal((await hook({ message: { text: '/start', from: OWNER, chat: { id: 1001, type: 'private' } } }, 'wrong')).status, 401); ok('webhook rejects a wrong secret header');
 assert.equal((await api('state')).status, 403); ok('API is closed before /start');
+await hook({ message: { text: '/start', chat: { id: -100123, type: 'supergroup' } } });
+await hook({ message: { text: '/start', from: { id: 5 }, chat: { id: -5, type: 'group' } } });
+assert.equal((await api('state')).status, 403); ok('id-less or group /start cannot claim the bot');
 await msg('/start');
 assert.match(lastMsg().payload.text, /Xoş gəldin/); assert.ok(lastMsg().payload.reply_markup.inline_keyboard[0][0].web_app); ok('/start claims the owner and sends the Open app button');
 const stranger = { id: 2002, first_name: 'X' };

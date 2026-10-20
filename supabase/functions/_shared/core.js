@@ -915,6 +915,8 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
       const isOwner = owner && owner.id === from.id;
       if (text.startsWith('/start')) {
         if (!owner) {
+          // Only a real person in a private chat can claim the bot (never a group, channel or id-less update).
+          if (typeof from.id !== 'number' || m.chat?.type !== 'private' || m.chat.id !== from.id) return;
           await setKV('owner', { id: from.id, chat_id: m.chat.id, first_name: from.first_name || '' });
           await tg('sendMessage', { chat_id: m.chat.id, parse_mode: 'HTML', text: `<b>Xoş gəldin, ${from.first_name || 'qağa'}!</b>\nBu bot artıq sənindi — başqa heç kəs girə bilməz.\n\nAşağıdakı düyməni bas, Pəhləvanı aç. Çəkini yazmax üçün sadəcə rəqəm göndər (məs. 104.6).`, reply_markup: openAppButton() });
           return;

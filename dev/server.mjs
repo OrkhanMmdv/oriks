@@ -14,7 +14,7 @@ const h = await makeHarness({ dataDir: process.env.MEMORY ? undefined : fileURLT
 
 // Claim the bot as the test owner (same as sending /start).
 const secret = await derivedSecret(FAKE_TOKEN, 'webhook');
-await h.app.handle(new Request('http://x/pehlevan/webhook', { method: 'POST', headers: { 'x-telegram-bot-api-secret-token': secret }, body: JSON.stringify({ message: { text: '/start', from: OWNER, chat: { id: OWNER.id } } }) }));
+await h.app.handle(new Request('http://x/pehlevan/webhook', { method: 'POST', headers: { 'x-telegram-bot-api-secret-token': secret }, body: JSON.stringify({ message: { text: '/start', from: OWNER, chat: { id: OWNER.id, type: 'private' } } }) }));
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.json': 'application/json' };
 
