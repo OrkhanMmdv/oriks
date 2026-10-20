@@ -1068,7 +1068,7 @@ export function createApp({ db, env, now = () => Date.now(), fetchImpl = (...a) 
         // Safe status only: is the bot claimed, and does Telegram reach the webhook? (no ids, no secrets)
         const wh = await tg('getWebhookInfo', {});
         return json({
-          ok: true, app: 'pehlevan', ownerSet: !!(await ownerInfo()),
+          ok: true, app: 'pehlevan', ownerSet: !!(await ownerInfo()), ownerValid: typeof (await ownerInfo())?.id === 'number',
           webhook: wh.ok ? { set: !!wh.result.url, pending: wh.result.pending_update_count, lastError: wh.result.last_error_message || null } : null,
         });
       }
