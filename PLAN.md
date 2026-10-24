@@ -81,42 +81,51 @@ The training program the app uses is in `js/program.js`.
 
 ---
 
-## 4. Supplements
+## 4. Supplements (the ones you have)
 
-| Time | Supplement | Notes |
-|---|---|---|
-| **12:30 with lunch** | **Creatine monohydrate 5 g** | Every day, rest days too, no loading. This is the key supplement in the app's score. |
-| 12:30 with lunch | Vitamin D3 | You have it. Riga is dark in winter; dose as on the label (or a blood test) |
-| 12:30 with lunch | Omega-3 | You have it; useful because fish isn't in this plan every day |
-| 12:30 with lunch | Multivitamin | You have it |
-| 16:30 | Whey 30 g | Part of the snack, so it's logged as food, not as a supplement |
-| Before bed | Magnesium | Optional (sleep, cramps) |
+| Time | Take | Your product | Notes |
+|---|---|---|---|
+| **12:30 with lunch** | **Creatine 5 g** | Gaspari Creatine (1 scoop) | Every day, rest days too. **The most important one.** |
+| 12:30 with lunch | Vitamin D3, 1 capsule | FLAVA Vitamin D3 | Dark winter in Riga; take it with a meal that has some fat |
+| 12:30 with lunch | Omega-3 | FLAVA Omega 3 | Dose as on the label; useful because the plan has little fish |
+| 12:30 with lunch | Multivitamin, 1 capsule | FLAVA Multivitamin | **Only one multivitamin a day** |
+| **16:30** | Whey, 1 scoop (~30 g) + water | Scitec Radical Whey | It has a little creatine inside, but still take your 5 g creatine |
+| **22:20 before bed** | Magnesium bisglycinate, 1 capsule | VAST Magnesium 200 **or** FLAVA Magnesium | **One of the two.** Finish one bottle, then the other |
 
-**Avoid:** fat burners, diuretics, stimulant-heavy pre-workouts.
-**Water weight:** creatine adds ~1 kg of water in the first 1–2 weeks. That's not fat, so don't panic about it.
+**Don't use:**
+- **FLAVA Selenium:** your multivitamin already contains selenium, and too much is harmful.
+- **BioTech L-Carnitine:** no proven fat-loss effect.
+- **BioTech effervescent Multivitamin:** a backup for when FLAVA runs out; never take it together with FLAVA.
+- **Fat burners, diuretics, stimulant pre-workouts.**
+
+**Water weight:** creatine adds ~1 kg of water in the first 1–2 weeks. That's not fat.
+*(Not medical advice. With kidney problems or regular medication, ask a doctor first. Follow the doses on the labels.)*
 
 ---
 
 ## 5. Training — one full-body workout, Mon / Wed / Fri, 18:00–19:00
 
-I kept the workout you asked for (the same every time, ~60 min) instead of the pasted plan's three different sessions. The weekly structure is the same: 3 full-body sessions, with walking on rest days.
+The same workout every time, in your order, about 55–60 minutes:
 
 | # | Exercise | Sets × reps | Rest | Start |
 |---|---|---|---|---|
-| 1 | Barbell bench press | 3–4 × 5–7 | 2.5 min | 72.5 kg |
-| 2 | Barbell back squat | 3 × 6–8 | 2 min | 40 kg |
-| 3 | Wide-grip lat pulldown | 3 × 8–12 | 90 s | 55 kg |
-| 4 | Seated cable row **+** shoulder press machine (superset) | 3 × 10–12 / 8–12 | 90 s | 50 / 35 kg |
-| 5 | Lying leg curl **+** cable crunch (superset) | 3 × 10–15 / 12–15 | 60 s | 30 / 30 kg |
-| 6 | EZ-bar curl **+** rope pushdown (superset) | 2 × 10–15 | 60 s | 25 / 25 kg |
+| 1 | **Barbell squat** | 3–4 × 6–8 | 2.5 min | 40 kg |
+| 2 | **Barbell bench press** | 3–4 × 5–7 | 2.5 min | 72.5 kg |
+| 3 | **Wide-grip lat pulldown** | 3 × 8–12 | 90 s | 55 kg |
+| 4 | **Shoulder press machine** | 3 × 8–12 | 90 s | 35 kg |
+| 5a | **Dumbbell biceps curl** — superset | 3 × 10–12 | — | 12 kg each |
+| 5b | **Rope triceps pushdown** | 3 × 10–15 | 60 s | 25 kg |
 
-Warm-up 8 min (bike + mobility + bench ramp-up sets) · cool-down 4 min of stretching.
+- **Warm-up (8 min):** 5 min bike, hip circles, a goblet-squat hold, bodyweight squats and band pull-aparts. Then squat ramp-up: **bar × 10, 70% × 3, 85% × 1**.
+- **Bench warm-up:** after squats, do **bar × 10, 50% × 5, 70% × 3**. The app calculates both ramps from today's weight.
+- **Cool-down:** couch stretch, hamstring stretch, chest stretch and lat stretch.
+- **Supersets:** curl, then go straight to the pushdown, then rest 60 s.
 
 ### 8-week phases (from your plan)
 | Weeks | Phase | What to do |
 |---|---|---|
 | 1–2 | **Qayıdış** (re-entry) | Moderate weights, technique first, 2–3 reps in reserve, never to failure |
-| 3–4 | **Güc yığırıx** (build) | Add weight when it gets easy; bench goes to 4 sets |
+| 3–4 | **Güc yığırıx** (build) | Add weight when it gets easy; squat and bench go to 4 sets |
 | 5–6 | **Güc yığırıx II** (build) | Keep adding weight, watch your recovery |
 | 7–8 | **Saxla + bərkit** (hold) | Keep your strength, no extra sets, sleep and recovery first |
 

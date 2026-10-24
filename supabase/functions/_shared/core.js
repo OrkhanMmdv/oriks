@@ -34,12 +34,14 @@ export const DEFAULT_SETTINGS = {
   benchGoal: 105,         // estimated 1RM for the "Bench goal" badge
   squatGoal: 100,
   oldBest: { bench: 100, squat: 40 },
+  // Orkhan's own bottles. Not used (on purpose): FLAVA Selenium (already in the multi), L-Carnitine (no real
+  // fat-loss effect), a second multivitamin (BioTech effervescent — backup) and a second magnesium (backup).
   supps: [
-    { id: 'creatine', name: 'Kreatin 5 q', when: '12:30 nahar ilə' },
-    { id: 'vitd', name: 'D3 vitamini', when: '12:30 nahar ilə' },
-    { id: 'omega3', name: 'Omeqa-3', when: '12:30 nahar ilə' },
-    { id: 'multi', name: 'Multivitamin', when: '12:30 nahar ilə' },
-    { id: 'magnesium', name: 'Maqnezium', when: 'Yatmazdan qabax' },
+    { id: 'creatine', name: 'Kreatin 5 q (Gaspari)', when: '12:30 nahar ilə' },
+    { id: 'vitd', name: 'D3 vitamini (FLAVA)', when: '12:30 nahar ilə' },
+    { id: 'omega3', name: 'Omeqa-3 (FLAVA)', when: '12:30 nahar ilə' },
+    { id: 'multi', name: 'Multivitamin (FLAVA)', when: '12:30 nahar ilə' },
+    { id: 'magnesium', name: 'Maqnezium bisqlisinat 200 mq', when: '22:20, yatmazdan qabax' },
   ],
   studyPlan: [
     { id: 'db', name: 'Verilənlər bazası kursu', minutes: 45 },
@@ -59,7 +61,7 @@ export const DEFAULT_PRESETS = [
   { id: 'dinner_rest', name: 'Şam (istirahət): kəsmik 300 q, giləmeyvə, qoz 15 q, çörək 40 q', kcal: 605, protein: 57 },
   { id: 'coffee', name: 'Qara kofe / şəkərsiz çay', kcal: 5, protein: 0 },
   { id: 'egg', name: 'Qaynadılmış yumurta', kcal: 78, protein: 6 },
-  { id: 'shake', name: 'Protein kokteyli: whey 30 q (su ilə)', kcal: 120, protein: 24 },
+  { id: 'shake', name: 'Protein kokteyli: Radical Whey 1 ölçü (30 q, su ilə)', kcal: 120, protein: 23 },
   { id: 'cottage', name: 'Kəsmik 300 q (5%)', kcal: 365, protein: 51 },
   { id: 'dessert', name: 'Şirniyyat', kcal: 250, protein: 4 },
   { id: 'fastfood', name: 'Fast food', kcal: 900, protein: 35 },
@@ -255,6 +257,13 @@ const MIGRATIONS = [
       `insert into app.study_notes (date, extra, note) select day::text, extra_min, note from public.study_days on conflict do nothing`,
     ];
     for (const s of steps) { try { await db.q(s); } catch { /* table missing: nothing to import */ } }
+  }],
+  ['008_my_supplements', async db => {
+    // Brand names for the supplements Orkhan actually has; whey preset renamed.
+    const cur = asJson((await db.q(`select value from app.kv where key = 'settings'`))[0]?.value) || {};
+    cur.supps = DEFAULT_SETTINGS.supps;
+    await db.q(`insert into app.kv (key, value) values ('settings', $1::text::jsonb) on conflict (key) do update set value = excluded.value`, [JSON.stringify(cur)]);
+    await db.q(`delete from app.kv where key = 'presets'`);
   }],
   ['007_vitamin_shake_reminders', async db => {
     // Separate reminders for vitamins (12:20) and the protein shake (16:20); whey is its own preset now.

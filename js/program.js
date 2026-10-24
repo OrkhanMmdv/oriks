@@ -110,6 +110,12 @@ export const EXERCISES = {
     cues: ['Ombadan bük, beli yox', 'Yuxarıda bədən düz xətt, artıx açılma', 'Asanlaşanda döşündə disk tut'],
     video: '45 degree back extension form',
   },
+  dbcurl: {
+    name: 'Hantelnən biseps', equip: 'dumbbell', img: 'dbcurl',
+    log: 'Bir hantelin çəkisi',
+    cues: ['Ovuclar yuxarı baxsın, qaldıranda biləyi azca çevir', 'Dirsəklər bədənə yapışıx, yerindən oynamasın', 'Bədəni yelləmə — 2 saniyəyə endir'],
+    video: 'dumbbell bicep curl form',
+  },
   hammer: {
     name: 'Hantelnən çəkic biseps', equip: 'dumbbell', img: 'hammer',
     log: 'Bir hantelin çəkisi',
@@ -134,27 +140,25 @@ export const EXERCISES = {
 // so Monday evening → ready Wednesday from late morning).
 export const RECOVERY_HOURS = 40;
 
-// ONE full-body workout, the same every time, ~60 minutes:
-//   warm-up 8 min · lifting ~48 min (supersets save time) · cool-down 4 min.
+// ONE full-body workout, the same every time, ~55–60 minutes, in Orkhan's order:
+//   squat → bench → lat pulldown → shoulder press → dumbbell biceps + rope triceps (superset).
+//   Warm-up 8 min · lifting ~45 min · cool-down 4 min.
 export const SESSIONS = [
   {
     id: 'FB', name: 'Bütün bədən', focus: 'Hər dəfə eyni · ~60 dəq',
     warmup: {
       cardio: '5 dəq yüngül velosiped',
-      drills: ['Lentnən pull-apart ×15', 'Push-up plus ×10', 'Omba fırlatma ×10', 'Bədən çəkisiynən squat ×10'],
+      drills: ['Omba fırlatma ×10', 'Goblet squat saxlama 30 san', 'Bədən çəkisiynən squat ×10', 'Lentnən pull-apart ×15'],
     },
     exercises: [
+      { key: 'squat', sets: 3, setsBuild: 4, reps: [6, 8], rest: 150, start: 40, step: 5 },
       { key: 'bench', sets: 3, setsBuild: 4, reps: [5, 7], rest: 150, start: 72.5, step: 2.5 },
-      { key: 'squat', sets: 3, reps: [6, 8], rest: 120, start: 40, step: 5 },
       { key: 'pulldown', sets: 3, reps: [8, 12], rest: 90, start: 55, step: 5 },
-      { key: 'cablerow', sets: 3, reps: [10, 12], rest: 0, start: 50, step: 5, ss: 1 },
-      { key: 'shoulderpress', sets: 3, reps: [8, 12], rest: 90, start: 35, step: 5, ss: 1 },
-      { key: 'legcurl', sets: 3, reps: [10, 15], rest: 0, start: 30, step: 5, ss: 2 },
-      { key: 'crunch', sets: 3, reps: [12, 15], rest: 60, start: 30, step: 5, ss: 2 },
-      { key: 'ezcurl', sets: 2, reps: [10, 15], rest: 0, start: 25, step: 2.5, ss: 3 },
-      { key: 'pushdown', sets: 2, reps: [10, 15], rest: 60, start: 25, step: 2.5, ss: 3 },
+      { key: 'shoulderpress', sets: 3, reps: [8, 12], rest: 90, start: 35, step: 5 },
+      { key: 'dbcurl', sets: 3, reps: [10, 12], rest: 0, start: 12, step: 2, ss: 1 },
+      { key: 'pushdown', sets: 3, reps: [10, 15], rest: 60, start: 25, step: 2.5, ss: 1 },
     ],
-    cooldown: ['Qapı ağzında döş açma 30 san/tərəf', 'Stoykada kürək dartma 30 san/tərəf', 'Diz üstə omba qabağı (couch) 30 san/tərəf', 'Oturaraq arxa bud dartma 45 san'],
+    cooldown: ['Diz üstə omba qabağı (couch) 30 san/tərəf', 'Oturaraq arxa bud dartma 45 san', 'Qapı ağzında döş açma 30 san/tərəf', 'Stoykada kürək dartma 30 san/tərəf'],
     cardio: true,
   },
 ];
@@ -162,7 +166,7 @@ export const SESSIONS = [
 // Phases by week. sets(ex, i) decides how many sets an exercise gets.
 export const PHASES = {
   reentry: { name: 'Qayıdış', rir: '2–3', note: 'Həftə 1–2: orta çəki, texnika birinci. 2–3 təkrar ehtiyatda saxla, tükənməyə qədər getmə.' },
-  build1: { name: 'Güc yığırıx', rir: '1–2', note: 'Həftə 3–4: asan gələndə çəkini artır. Bençpres 4 set.' },
+  build1: { name: 'Güc yığırıx', rir: '1–2', note: 'Həftə 3–4: asan gələndə çəkini artır. Squat və bençpres 4 set.' },
   keep: { name: 'Saxla + bərkit', rir: '2', note: 'Son 2 həftə: gücü saxla, artıq set əlavə eləmə. Yuxu və bərpa birinci yerdədi.' },
   deload: { name: 'Nəfəs dərmə', rir: '4', note: 'Çəki eyni, setlər yarı. Bədən dincəlsin, qağa.' },
   build2: { name: 'Güc yığırıx II', rir: '1–2', note: 'Həftə 5–6: yükü artırmağa davam, yorğunluğa bax.' },
@@ -174,7 +178,7 @@ export function setsFor(ex, index, phaseId) {
   if (phaseId === 'reentry') return Math.min(base, 3);
   if (phaseId === 'deload' || phaseId === 'test') return Math.ceil(base / 2);
   if (phaseId === 'keep') return base;            // hold: no extra volume while cutting
-  return index === 0 && ex.setsBuild ? ex.setsBuild : base;
+  return ex.setsBuild || base;                    // build weeks: squat and bench get 4 sets
 }
 
 // Ramp-up sets before the first lift, from today's working weight.

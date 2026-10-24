@@ -27,6 +27,12 @@ function build(session, hist, phaseId) {
   });
   const ramp = rampUp(session.exercises[0].key, ex[0].sug.w);
   const warm = [session.warmup.cardio, ...session.warmup.drills, ...ramp.map(r => `${EXERCISES[session.exercises[0].key].name}: ${kg(r.weight)} kq × ${r.reps} (${r.label})`)];
+  // A heavy barbell lift in 2nd place (bench after squat) gets a short ramp of its own, done right before it.
+  const second = session.exercises[1];
+  if (second && EXERCISES[second.key].equip === 'barbell') {
+    const r2 = rampUp(second.key, ex[1].sug.w).filter(r => r.label !== '85%');
+    warm.push(...r2.map(r => `${EXERCISES[second.key].name} (squatdan sonra): ${kg(r.weight)} kq × ${r.reps} (${r.label})`));
+  }
   return {
     id: null, session: session.id, started: Date.now(), phase: phaseId,
     warm: warm.map(t => ({ t, done: false })), cool: session.cooldown.map(t => ({ t, done: false })),
